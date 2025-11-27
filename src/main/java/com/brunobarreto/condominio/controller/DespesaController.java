@@ -5,6 +5,7 @@ import com.brunobarreto.condominio.service.DespesaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,6 +34,12 @@ public class DespesaController {
     @PostMapping
     public String salvar(Despesa despesa) {
         despesaService.salvar(despesa);
+        return "redirect:/despesas";
+    }
+
+    @GetMapping("/excluir/{id}")
+    public String excluirDespesa(@PathVariable Long id) {
+        despesaService.excluir(id);
         return "redirect:/despesas";
     }
     

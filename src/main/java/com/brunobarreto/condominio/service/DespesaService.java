@@ -22,5 +22,9 @@ public class DespesaService {
     public Despesa salvar(Despesa despesa) {
         return despesaRepository.save(despesa);
     }
+
+    public void excluir(Long id) {
+        despesaRepository.deleteById(id);
+    }
     
 }
