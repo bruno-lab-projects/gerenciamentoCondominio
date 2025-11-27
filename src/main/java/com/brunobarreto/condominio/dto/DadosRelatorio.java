@@ -8,14 +8,12 @@ import java.math.BigDecimal;
 public class DadosRelatorio {
     
     private BigDecimal saldoAnterior;
-    private BigDecimal valorCondominio; // Valor base (do apartamento)
+    private BigDecimal valorCondominio;
     
-    // Pagantes separados por tipo
-    private Integer qtdePagantesApto; // Ex: 9, 10 ou 11
-    private Integer qtdePagantesLoja; // Ex: 0 ou 1
+    private Integer qtdePagantesApto;
+    private Integer qtdePagantesLoja;
     
-    // Mudamos para ficar mais fácil para sua mãe
-    private Integer mes; // 1 a 12
-    private Integer ano; // 2025
+    private Integer mes;
+    private Integer ano;
     
 }
