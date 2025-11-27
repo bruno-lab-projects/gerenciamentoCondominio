@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Condomínio</a>
+        
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/relatorios/preparo}">Relatórios</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/despesas}">Despesas</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center text-white">
+                <span class="me-3">
+                    Olá, <strong sec:authentication="name">Usuário</strong>
+                </span>
+                
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-light btn-sm">Sair</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
