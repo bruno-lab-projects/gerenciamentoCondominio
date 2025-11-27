@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Prestação de Contas</title>
+    <style>
+        body { font-family: sans-serif; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .resumo { border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; }
+        .tabela { width: 100%; border-collapse: collapse; }
+        .tabela th, .tabela td { border: 1px solid #000; padding: 5px; text-align: left; }
+        .saldo-box { background-color: #f0f0f0; padding: 10px; font-weight: bold; margin-top: 20px; }
+        .verde { color: green; }
+        .vermelho { color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Edifício Maroim</h1>
+        <h3>Prestação de Contas</h3>
+        <p>Período: <span th:text="${#temporals.format(periodoInicio, 'dd/MM/yyyy')}"></span> até <span th:text="${#temporals.format(periodoFim, 'dd/MM/yyyy')}"></span></p>
+    </div>
+
+    <div class="resumo">
+        <h4>Resumo Financeiro</h4>
+        <p>Saldo Anterior: <span th:text="${#numbers.formatCurrency(saldoAnterior)}"></span></p>
+        <p>Receita do Mês (<span th:text="${qtdePagantes}"></span> pagantes): <span class="verde" th:text="${#numbers.formatCurrency(receitaTotal)}"></span></p>
+        <p>Total de Despesas: <span class="vermelho" th:text="${#numbers.formatCurrency(despesaTotal)}"></span></p>
+    </div>
+
+    <h4>Detalhamento das Despesas</h4>
+    <table class="tabela">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="despesa : ${despesas}">
+                <td th:text="${#temporals.format(despesa.data, 'dd/MM/yyyy')}"></td>
+                <td th:text="${despesa.descricao}"></td>
+                <td th:text="${#numbers.formatCurrency(despesa.valor)}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="saldo-box">
+        SALDO FINAL EM CAIXA: <span th:text="${#numbers.formatCurrency(saldoAtual)}"></span>
+    </div>
+
+</body>
+</html>
