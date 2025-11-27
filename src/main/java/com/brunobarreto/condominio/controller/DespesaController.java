@@ -41,24 +41,17 @@ public class DespesaController {
                          @RequestParam("mesReferencia") Integer mes,
                          @RequestParam("anoReferencia") Integer ano) {
         
-        // 1. Validação de Segurança (Manual)
-        // Se o mês for inválido ou o ano muito absurdo, ignoramos ou tratamos
         if (mes < 1 || mes > 12 || ano < 2000 || ano > 2100) {
-            // Poderíamos retornar uma mensagem de erro, mas por enquanto
-            // vamos apenas reiniciar para hoje ou redirecionar.
             return "redirect:/despesas?erro=data_invalida";
         }
 
         try {
-            // 2. Tenta criar a data
             LocalDate dataFormatada = LocalDate.of(ano, mes, 1);
             despesa.setData(dataFormatada);
             
-            // 3. Salva
             despesaService.salvar(despesa);
             
         } catch (DateTimeException e) {
-            // Se por algum milagre passar da validação acima e der erro aqui
             return "redirect:/despesas?erro=data_invalida";
         }
 
