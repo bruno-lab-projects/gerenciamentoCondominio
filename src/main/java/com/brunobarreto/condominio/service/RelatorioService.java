@@ -36,8 +36,23 @@ public class RelatorioService {
         List<Despesa> despesas = repository.findByDataBetween(inicio, fim);
 
         // 3. Calcular Totais
-        // Receita = Valor do Condomínio * Quantidade de Pagantes
-        BigDecimal receitaTotal = dados.getValorCondominio().multiply(new BigDecimal(dados.getQuantidadePagantes()));
+        
+        // --- LÓGICA NOVA DE CÁLCULO ---
+        
+        // 3.1. Receita dos Apartamentos (Valor Base * Qtde Apts)
+        BigDecimal receitaAptos = dados.getValorCondominio()
+                .multiply(new BigDecimal(dados.getQtdePagantesApto()));
+
+        // 3.2. Receita da Loja (Valor Base * 2 * Qtde Loja)
+        // Multiplicamos por 2 pois a loja paga o dobro
+        BigDecimal valorCotaLoja = dados.getValorCondominio().multiply(new BigDecimal("2"));
+        BigDecimal receitaLoja = valorCotaLoja
+                .multiply(new BigDecimal(dados.getQtdePagantesLoja()));
+
+        // 3.3. Receita Total Somada
+        BigDecimal receitaTotal = receitaAptos.add(receitaLoja);
+
+        // --- FIM DA LÓGICA NOVA ---
 
         // Despesa Total = Soma de todas as despesas da lista
         BigDecimal despesaTotal = despesas.stream()
@@ -51,6 +66,8 @@ public class RelatorioService {
         Context context = new Context();
         context.setVariable("despesas", despesas);
         context.setVariable("dados", dados); // Passamos o DTO inteiro (tem mês, ano, saldo ant...)
+        context.setVariable("receitaAptos", receitaAptos);
+        context.setVariable("receitaLoja", receitaLoja);
         context.setVariable("receitaTotal", receitaTotal);
         context.setVariable("despesaTotal", despesaTotal);
         context.setVariable("saldoAtual", saldoAtual);

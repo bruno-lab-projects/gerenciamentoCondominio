@@ -46,9 +46,22 @@
                 <input type="number" class="form-control" id="valorCondominio" th:field="*{valorCondominio}" step="0.01" required>
             </div>
             
-            <div class="mb-3">
-                <label for="quantidadePagantes" class="form-label">Quantidade de Pagantes</label>
-                <input type="number" class="form-control" id="quantidadePagantes" th:field="*{quantidadePagantes}" required>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pagantes (Apartamentos):</label>
+                    <input type="number" class="form-control" name="qtdePagantesApto" 
+                           placeholder="Máx 11" min="0" max="11" required>
+                    <div class="form-text">Quantos moradores pagaram?</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Pagantes (Loja):</label>
+                    <select class="form-select" name="qtdePagantesLoja">
+                        <option value="1">Sim, pagou</option>
+                        <option value="0">Não pagou</option>
+                    </select>
+                    <div class="form-text">A loja paga o dobro do valor.</div>
+                </div>
             </div>
             
             <div class="mb-3">
