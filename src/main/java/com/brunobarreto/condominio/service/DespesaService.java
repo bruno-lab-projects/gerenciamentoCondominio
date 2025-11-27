@@ -28,8 +28,8 @@ public class DespesaService {
         despesaRepository.deleteById(id);
     }
 
-    public BigDecimal calcularTotal() {
-        return despesaRepository.findAll().stream()
+    public BigDecimal calcularTotal(List<Despesa> despesas) {
+        return despesas.stream()
                 .map(Despesa::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

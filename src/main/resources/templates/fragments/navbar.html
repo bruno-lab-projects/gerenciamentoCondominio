@@ -2,24 +2,27 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Condomínio</a>
         
-        <div class="collapse navbar-collapse">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarConteudo" aria-controls="navbarConteudo" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarConteudo">
+            
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/relatorios}">Relatórios</a>
                 </li>
-
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/despesas}">Despesas</a>
                 </li>
             </ul>
 
-            <div class="d-flex align-items-center text-white">
-                <span class="me-3">
+            <div class="d-flex align-items-center text-white ms-auto">
+                <span class="me-3 navbar-text text-white">
                     Olá, <strong sec:authentication="name">Usuário</strong>
                 </span>
                 
-                <form th:action="@{/logout}" method="post">
+                <form th:action="@{/logout}" method="post" class="d-inline">
                     <button type="submit" class="btn btn-outline-light btn-sm">Sair</button>
                 </form>
             </div>

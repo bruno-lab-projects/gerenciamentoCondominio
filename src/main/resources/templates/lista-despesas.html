@@ -11,6 +11,47 @@
     <div class="container mt-5">
         <h2 class="mb-4">Prestação de Contas</h2>
         
+        <!-- FORMULÁRIO DE FILTRO -->
+        <div class="card mb-4">
+            <div class="card-body bg-light">
+                <form th:action="@{/despesas}" method="get" class="row g-3 align-items-end">
+                    
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Filtrar por Mês:</label>
+                        <select name="mes" class="form-select">
+                            <option value="1" th:selected="${mesSelecionado == 1}">Janeiro</option>
+                            <option value="2" th:selected="${mesSelecionado == 2}">Fevereiro</option>
+                            <option value="3" th:selected="${mesSelecionado == 3}">Março</option>
+                            <option value="4" th:selected="${mesSelecionado == 4}">Abril</option>
+                            <option value="5" th:selected="${mesSelecionado == 5}">Maio</option>
+                            <option value="6" th:selected="${mesSelecionado == 6}">Junho</option>
+                            <option value="7" th:selected="${mesSelecionado == 7}">Julho</option>
+                            <option value="8" th:selected="${mesSelecionado == 8}">Agosto</option>
+                            <option value="9" th:selected="${mesSelecionado == 9}">Setembro</option>
+                            <option value="10" th:selected="${mesSelecionado == 10}">Outubro</option>
+                            <option value="11" th:selected="${mesSelecionado == 11}">Novembro</option>
+                            <option value="12" th:selected="${mesSelecionado == 12}">Dezembro</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Ano:</label>
+                        <input type="number" name="ano" class="form-control" th:value="${anoSelecionado}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter"></i> Filtrar
+                        </button>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <a th:href="@{/despesas}" class="btn btn-outline-secondary w-100">Limpar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
         <div class="mb-3">
             <a href="/despesas/novo" class="btn btn-primary">Nova Despesa</a>
         </div>
