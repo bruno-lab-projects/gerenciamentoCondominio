@@ -22,6 +22,7 @@ public class DespesaController {
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("despesas", despesaService.listarTodas());
+        model.addAttribute("totalGastos", despesaService.calcularTotal());
         return "lista-despesas";
     }
 

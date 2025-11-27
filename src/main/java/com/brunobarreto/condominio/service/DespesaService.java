@@ -4,6 +4,7 @@ import com.brunobarreto.condominio.model.Despesa;
 import com.brunobarreto.condominio.repository.DespesaRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -25,6 +26,12 @@ public class DespesaService {
 
     public void excluir(Long id) {
         despesaRepository.deleteById(id);
+    }
+
+    public BigDecimal calcularTotal() {
+        return despesaRepository.findAll().stream()
+                .map(Despesa::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     
 }
