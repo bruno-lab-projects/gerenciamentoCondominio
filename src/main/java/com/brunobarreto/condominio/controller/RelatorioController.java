@@ -2,6 +2,7 @@ package com.brunobarreto.condominio.controller;
 
 import com.brunobarreto.condominio.dto.DadosRelatorio;
 import com.brunobarreto.condominio.service.RelatorioService;
+import com.lowagie.text.DocumentException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,29 +16,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/relatorios")
 public class RelatorioController {
 
-    private final RelatorioService relatorioService;
+    private final RelatorioService service;
 
-    public RelatorioController(RelatorioService relatorioService) {
-        this.relatorioService = relatorioService;
+    public RelatorioController(RelatorioService service) {
+        this.service = service;
     }
 
+    // Abre a tela de formulário
     @GetMapping("/preparo")
-    public String preparo(Model model) {
+    public String abrirFormulario(Model model) {
         model.addAttribute("dadosRelatorio", new DadosRelatorio());
         return "form-relatorio";
     }
 
+    // Gera o PDF
     @PostMapping("/gerar")
-    public ResponseEntity<byte[]> gerar(DadosRelatorio dadosRelatorio) {
-        byte[] pdf = relatorioService.gerarPdfRelatorio(dadosRelatorio);
+    public ResponseEntity<byte[]> gerarRelatorio(DadosRelatorio dados) {
+        try {
+            byte[] pdfBytes = service.gerarPdfRelatorio(dados);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "relatorio-condominio.pdf");
+            // Configura o navegador para baixar o arquivo
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio_condominio.pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(pdf);
+        } catch (DocumentException e) {
+            // Se der erro no PDF, retorna erro 500 (em produção trataríamos melhor)
+            return ResponseEntity.internalServerError().build();
+        }
     }
-    
 }

@@ -2,54 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Prestação de Contas</title>
+    <title>Relatório Mensal</title>
     <style>
-        body { font-family: sans-serif; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .resumo { border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; }
-        .tabela { width: 100%; border-collapse: collapse; }
-        .tabela th, .tabela td { border: 1px solid #000; padding: 5px; text-align: left; }
-        .saldo-box { background-color: #f0f0f0; padding: 10px; font-weight: bold; margin-top: 20px; }
-        .verde { color: green; }
-        .vermelho { color: red; }
+        body { font-family: sans-serif; font-size: 12px; }
+        .cabecalho { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        .titulo-predio { font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .periodo { color: #666; margin-top: 5px; }
+        
+        .caixa-resumo { border: 1px solid #000; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; }
+        .linha-resumo { margin-bottom: 5px; font-size: 14px; }
+        .negrito { font-weight: bold; }
+        .verde { color: #008000; }
+        .vermelho { color: #cc0000; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #eee; border: 1px solid #000; padding: 5px; text-align: left; }
+        td { border: 1px solid #000; padding: 5px; }
+        
+        .saldo-final { 
+            margin-top: 30px; 
+            padding: 15px; 
+            background-color: #ddd; 
+            text-align: center; 
+            font-size: 16px; 
+            font-weight: bold; 
+            border: 2px solid #000; 
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Edifício Maroim</h1>
-        <h3>Prestação de Contas</h3>
-        <p>Período: <span th:text="${#temporals.format(periodoInicio, 'dd/MM/yyyy')}"></span> até <span th:text="${#temporals.format(periodoFim, 'dd/MM/yyyy')}"></span></p>
+    <div class="cabecalho">
+        <div class="titulo-predio">Edifício Maroim</div>
+        <h3>Prestação de Contas Mensal</h3>
+        <div class="periodo">
+            Referência: <span th:text="${dados.mes} + '/' + ${dados.ano}"></span>
+        </div>
     </div>
 
-    <div class="resumo">
-        <h4>Resumo Financeiro</h4>
-        <p>Saldo Anterior: <span th:text="${#numbers.formatCurrency(saldoAnterior)}"></span></p>
-        <p>Receita do Mês (<span th:text="${qtdePagantes}"></span> pagantes): <span class="verde" th:text="${#numbers.formatCurrency(receitaTotal)}"></span></p>
-        <p>Total de Despesas: <span class="vermelho" th:text="${#numbers.formatCurrency(despesaTotal)}"></span></p>
+    <div class="caixa-resumo">
+        <div class="linha-resumo">
+            Saldo Anterior: 
+            <span class="negrito" th:text="${#numbers.formatCurrency(dados.saldoAnterior)}"></span>
+        </div>
+        <div class="linha-resumo">
+            Receita (+): 
+            <span class="verde" th:text="${#numbers.formatCurrency(receitaTotal)}"></span>
+            (Ref. <span th:text="${dados.quantidadePagantes}"></span> pagantes x <span th:text="${#numbers.formatCurrency(dados.valorCondominio)}"></span>)
+        </div>
+        <div class="linha-resumo">
+            Despesas (-): 
+            <span class="vermelho" th:text="${#numbers.formatCurrency(despesaTotal)}"></span>
+        </div>
     </div>
 
-    <h4>Detalhamento das Despesas</h4>
-    <table class="tabela">
+    <h4>Detalhamento de Despesas</h4>
+    <table>
         <thead>
             <tr>
-                <th>Data</th>
                 <th>Descrição</th>
-                <th>Valor</th>
+                <th style="width: 100px;">Valor</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="despesa : ${despesas}">
-                <td th:text="${#temporals.format(despesa.data, 'dd/MM/yyyy')}"></td>
                 <td th:text="${despesa.descricao}"></td>
                 <td th:text="${#numbers.formatCurrency(despesa.valor)}"></td>
+            </tr>
+            <tr th:if="${despesas.empty}">
+                <td colspan="2" style="text-align: center;">Nenhuma despesa lançada neste mês.</td>
             </tr>
         </tbody>
     </table>
 
-    <div class="saldo-box">
-        SALDO FINAL EM CAIXA: <span th:text="${#numbers.formatCurrency(saldoAtual)}"></span>
+    <div class="saldo-final">
+        SALDO ATUAL EM CAIXA: <span th:text="${#numbers.formatCurrency(saldoAtual)}"></span>
     </div>
+
+    <p style="text-align: center; margin-top: 50px; font-size: 10px;">
+        Relatório gerado automaticamente em <span th:text="${#temporals.format(dataInicio.now(), 'dd/MM/yyyy HH:mm')}"></span>
+    </p>
 
 </body>
 </html>
