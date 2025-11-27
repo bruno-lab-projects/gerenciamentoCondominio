@@ -27,3 +27,4 @@ bin/
 # Variáveis de ambiente e segredos (MUITO IMPORTANTE NÃO SUBIR ISSO)
 .env
 application-local.properties
+CONTEXT.md
