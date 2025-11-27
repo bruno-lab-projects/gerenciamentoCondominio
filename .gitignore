@@ -1,0 +1,29 @@
+# Arquivos compilados (não queremos subir o binário, só o código fonte)
+target/
+*.class
+
+# Eclipse / VS Code / IntelliJ (arquivos de configuração da IDE)
+.mvn/
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.springBeans
+bin/
+
+# Mac OS (arquivos de sistema chatos)
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Logs
+*.log
+
+# Variáveis de ambiente e segredos (MUITO IMPORTANTE NÃO SUBIR ISSO)
+.env
+application-local.properties
