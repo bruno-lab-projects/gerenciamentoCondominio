@@ -2,13 +2,13 @@ package com.brunobarreto.condominio.controller;
 
 import com.brunobarreto.condominio.dto.DadosRelatorio;
 import com.brunobarreto.condominio.service.RelatorioService;
-import com.lowagie.text.DocumentException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,27 +22,38 @@ public class RelatorioController {
         this.service = service;
     }
 
-    // Abre a tela de formulário
-    @GetMapping("/preparo")
-    public String abrirFormulario(Model model) {
+    // 1. TELA PRINCIPAL (Lista de Histórico)
+    // Acessível por ADMIN e MORADOR
+    @GetMapping
+    public String listarRelatorios(Model model) {
+        model.addAttribute("relatorios", service.listarTodos());
+        return "lista-relatorios"; // Vamos criar esse HTML
+    }
+
+    // 2. FORMULÁRIO (Só ADMIN)
+    @GetMapping("/novo")
+    public String novoRelatorio(Model model) {
         model.addAttribute("dadosRelatorio", new DadosRelatorio());
         return "form-relatorio";
     }
 
-    // Gera o PDF
-    @PostMapping("/gerar")
-    public ResponseEntity<byte[]> gerarRelatorio(DadosRelatorio dados) {
+    // 3. SALVAR (Só ADMIN) - Agora salva e volta pra lista
+    @PostMapping("/salvar")
+    public String salvarRelatorio(DadosRelatorio dados) {
+        service.processarESalvarRelatorio(dados);
+        return "redirect:/relatorios";
+    }
+
+    // 4. DOWNLOAD PDF (Qualquer um)
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> baixarPdf(@PathVariable Long id) {
         try {
-            byte[] pdfBytes = service.gerarPdfRelatorio(dados);
-
-            // Configura o navegador para baixar o arquivo
+            byte[] pdf = service.gerarPdfPorId(id);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio_condominio.pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
                     .contentType(MediaType.APPLICATION_PDF)
-                    .body(pdfBytes);
-
-        } catch (DocumentException e) {
-            // Se der erro no PDF, retorna erro 500 (em produção trataríamos melhor)
+                    .body(pdf);
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }

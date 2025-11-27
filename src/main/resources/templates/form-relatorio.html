@@ -11,7 +11,7 @@
     <div class="container mt-5">
         <h2 class="mb-4">Gerar Relatório de Prestação de Contas</h2>
         
-        <form action="/relatorios/gerar" method="post" th:object="${dadosRelatorio}">
+        <form th:action="@{/relatorios/salvar}" method="post" th:object="${dadosRelatorio}">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="mes" class="form-label">Mês de Referência</label>
@@ -66,8 +66,8 @@
             </div>
             
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Gerar PDF</button>
-                <a href="/despesas" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Relatório</button>
+                <a th:href="@{/relatorios}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>

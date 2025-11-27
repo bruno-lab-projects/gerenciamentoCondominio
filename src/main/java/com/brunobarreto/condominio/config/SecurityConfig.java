@@ -31,7 +31,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 // Página de login padrão é permitida para todos
                 // Ao logar com sucesso, vai para a tela de relatórios
-                .defaultSuccessUrl("/relatorios/preparo", true)
+                .defaultSuccessUrl("/relatorios", true)
                 .permitAll()
             )
             .logout(logout -> logout
