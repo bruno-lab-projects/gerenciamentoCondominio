@@ -19,6 +19,9 @@ public class SecurityConfig {
                 // Arquivos estáticos (CSS, JS) são públicos
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 
+                // Página de login é pública
+                .requestMatchers("/login").permitAll()
+                
                 // Só ADMIN pode mexer em despesas
                 .requestMatchers("/despesas/**").hasRole("ADMIN")
                 
@@ -29,8 +32,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                // Página de login padrão é permitida para todos
-                // Ao logar com sucesso, vai para a tela de relatórios
+                .loginPage("/login")
                 .defaultSuccessUrl("/relatorios", true)
                 .permitAll()
             )
