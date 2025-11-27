@@ -1,0 +1,26 @@
+package com.brunobarreto.condominio.service;
+
+import com.brunobarreto.condominio.model.Despesa;
+import com.brunobarreto.condominio.repository.DespesaRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class DespesaService {
+
+    private final DespesaRepository despesaRepository;
+
+    public DespesaService(DespesaRepository despesaRepository) {
+        this.despesaRepository = despesaRepository;
+    }
+
+    public List<Despesa> listarTodas() {
+        return despesaRepository.findAll();
+    }
+
+    public Despesa salvar(Despesa despesa) {
+        return despesaRepository.save(despesa);
+    }
+    
+}
