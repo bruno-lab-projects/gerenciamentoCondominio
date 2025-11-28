@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @page { size: A4; margin: 20px; }
+        body { font-family: "Times New Roman", serif; font-size: 14px; color: #000; line-height: 1.4; }
+        
+        .pagina { page-break-after: always; padding-top: 10px; }
+        .recibo-container { margin-bottom: 40px; } /* Espaço entre Via 1 e Via 2 */
+        
+        h2 { text-align: center; font-size: 16px; margin: 0; font-weight: bold; text-transform: uppercase; }
+        h3 { text-align: center; font-size: 14px; margin: 5px 0 15px 0; font-weight: normal; text-transform: uppercase; }
+        
+        p { margin: 8px 0; text-align: justify; }
+        
+        .assinatura { margin-top: 30px; border-top: 1px solid #000; width: 60%; padding-top: 5px; }
+        
+        /* Linha de corte */
+        .corte { border-top: 1px dashed #000; margin: 30px 0; }
+        
+        /* Obs de isenção */
+        .obs-isencao { font-weight: bold; margin-top: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div th:each="item : ${form.boletos}" class="pagina">
+        
+        <div class="recibo-container">
+            <h2>EDIFÍCIO MAROIM</h2>
+            <h3>Recibo de Pagamento de Condomínio</h3>
+            
+            <p>
+                Valor da taxa de condomínio do mês de 
+                <strong th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
+                <span th:if="${!item.isento}">R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></span>
+                <span th:if="${item.isento}">ISENTO</span>
+            </p>
+
+            <p>
+                Recebi(mos) de <strong><span th:text="${item.nomeMorador}"></span></strong> 
+                do <strong th:text="${item.unidade}"></strong> do Edifício Maroim, localizado na 
+                Avenida Sete de Setembro nº 1070 Centro (Mercês) Salvador, BA.
+            </p>
+
+            <div th:if="${!item.isento}">
+                <p>
+                    A importância de <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+                    (<span th:text="${item.valorPorExtenso}"></span>)
+                    referente ao pagamento da taxa de condomínio de 
+                    <span th:text="${form.nomeMesExtenso}"></span> de <span th:text="${form.ano}"></span>.
+                </p>
+
+                <p>
+                    Vencimento <span th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></span>
+                    podendo ser pago até o dia <span th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></span>,
+                    após essa data será cobrado multa de 10% e juros de 1%.
+                </p>
+
+                <p>
+                    Valor <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>. 
+                    Pago no dia ____________________
+                </p>
+            </div>
+
+            <div th:if="${item.isento}">
+                <p class="obs-isencao">
+                    Obs: Síndica isenta da taxa de condomínio aprovada em assembleia do dia 10 de fevereiro de 2023.
+                </p>
+            </div>
+
+            <div class="assinatura">Assinatura da síndica ou subsíndica</div>
+        </div>
+
+        <div class="corte"></div>
+
+        <div class="recibo-container">
+            <h2>EDIFÍCIO MAROIM</h2>
+            <h3>Recibo de Pagamento de Condomínio</h3>
+            
+            <p>
+                Valor da taxa de condomínio do mês de 
+                <strong th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
+                <span th:if="${!item.isento}">R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></span>
+                <span th:if="${item.isento}">ISENTO</span>
+            </p>
+
+            <p>
+                Recebi(mos) de <strong><span th:text="${item.nomeMorador}"></span></strong> 
+                do <strong th:text="${item.unidade}"></strong> do Edifício Maroim, localizado na 
+                Avenida Sete de Setembro nº 1070 Centro (Mercês) Salvador, BA.
+            </p>
+
+            <div th:if="${!item.isento}">
+                <p>
+                    A importância de <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>
+                    (<span th:text="${item.valorPorExtenso}"></span>)
+                    referente ao pagamento da taxa de condomínio de 
+                    <span th:text="${form.nomeMesExtenso}"></span> de <span th:text="${form.ano}"></span>.
+                </p>
+
+                <p>
+                    Vencimento <span th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></span>
+                    podendo ser pago até o dia <span th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></span>,
+                    após essa data será cobrado multa de 10% e juros de 1%.
+                </p>
+
+                <p>
+                    Valor <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>. 
+                    Pago no dia ____________________
+                </p>
+            </div>
+
+            <div th:if="${item.isento}">
+                <p class="obs-isencao">
+                    Obs: Síndica isenta da taxa de condomínio aprovada em assembleia do dia 10 de fevereiro de 2023.
+                </p>
+            </div>
+
+            <div class="assinatura">Assinatura da síndica ou subsíndica</div>
+        </div>
+        
+    </div>
+
+</body>
+</html>

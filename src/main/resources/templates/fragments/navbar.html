@@ -17,6 +17,10 @@
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/despesas}">Despesas</a>
                 </li>
+                
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/boletos/preparo-em-lote}">Gerar Recibos</a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-center text-white ms-auto">
