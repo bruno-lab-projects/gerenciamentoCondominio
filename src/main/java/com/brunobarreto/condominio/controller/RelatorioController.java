@@ -65,4 +65,18 @@ public class RelatorioController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    // Rota para abrir o formulário de edição
+    @GetMapping("/editar/{id}")
+    public String editarRelatorio(@PathVariable Long id, Model model) {
+        // Busca os dados antigos convertidos para DTO
+        DadosRelatorio dadosAntigos = service.buscarDadosParaEdicao(id);
+        
+        model.addAttribute("dadosRelatorio", dadosAntigos);
+        
+        model.addAttribute("mesPadrao", dadosAntigos.getMes());
+        model.addAttribute("anoPadrao", dadosAntigos.getAno());
+        
+        return "form-relatorio";
+    }
 }

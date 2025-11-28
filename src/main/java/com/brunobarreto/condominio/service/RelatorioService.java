@@ -96,22 +96,24 @@ public class RelatorioService {
 
     // --- MÉTODO 1: SALVAR O FECHAMENTO (Síndica) ---
     public void processarESalvarRelatorio(DadosRelatorio dados) {
-        // 1. Faz todos os cálculos que já fazíamos (Receita, Despesa, Saldo)
+        // ... (Cálculos de datas e despesas continuam iguais) ...
         YearMonth anoMes = YearMonth.of(dados.getAno(), dados.getMes());
         LocalDate inicio = anoMes.atDay(1);
         LocalDate fim = anoMes.atEndOfMonth();
-        
         List<Despesa> despesas = despesaRepository.findByDataBetween(inicio, fim);
 
+        // ... (Cálculos matemáticos de receita/despesa continuam iguais) ...
         BigDecimal receitaAptos = dados.getValorCondominio().multiply(new BigDecimal(dados.getQtdePagantesApto()));
         BigDecimal receitaLoja = dados.getValorCondominio().multiply(new BigDecimal("2")).multiply(new BigDecimal(dados.getQtdePagantesLoja()));
         BigDecimal receitaTotal = receitaAptos.add(receitaLoja);
-
         BigDecimal despesaTotal = despesas.stream().map(Despesa::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal saldoAtual = dados.getSaldoAnterior().add(receitaTotal).subtract(despesaTotal);
 
-        // 2. Cria o objeto para salvar no banco
-        RelatorioMensal relatorio = new RelatorioMensal();
+        // --- AQUI MUDA: Verificar se já existe ---
+        RelatorioMensal relatorio = relatorioRepository.findByMesAndAno(dados.getMes(), dados.getAno())
+                .orElse(new RelatorioMensal()); // Se não achar, cria um novo. Se achar, usa o existente (atualiza).
+
+        // Atualiza os dados (seja novo ou velho)
         relatorio.setMes(dados.getMes());
         relatorio.setAno(dados.getAno());
         relatorio.setSaldoAnterior(dados.getSaldoAnterior());
@@ -119,13 +121,28 @@ public class RelatorioService {
         relatorio.setQtdePagantesApto(dados.getQtdePagantesApto());
         relatorio.setQtdePagantesLoja(dados.getQtdePagantesLoja());
         
-        // Salva os totais calculados
+        // Totais calculados
         relatorio.setReceitaTotal(receitaTotal);
         relatorio.setDespesaTotal(despesaTotal);
         relatorio.setSaldoAtual(saldoAtual);
         relatorio.setDataGeracao(LocalDateTime.now());
 
         relatorioRepository.save(relatorio);
+    }
+
+    // Novo método para carregar os dados na tela de edição
+    public DadosRelatorio buscarDadosParaEdicao(Long id) {
+        RelatorioMensal r = relatorioRepository.findById(id).orElseThrow();
+        
+        DadosRelatorio dados = new DadosRelatorio();
+        dados.setMes(r.getMes());
+        dados.setAno(r.getAno());
+        dados.setSaldoAnterior(r.getSaldoAnterior());
+        dados.setValorCondominio(r.getValorCondominio());
+        dados.setQtdePagantesApto(r.getQtdePagantesApto());
+        dados.setQtdePagantesLoja(r.getQtdePagantesLoja());
+        
+        return dados;
     }
 
     // --- MÉTODO 2: LISTAR TUDO (Para a tela do morador) ---
