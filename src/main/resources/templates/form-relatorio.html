@@ -14,26 +14,26 @@
         <form th:action="@{/relatorios/salvar}" method="post" th:object="${dadosRelatorio}">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="mes" class="form-label">Mês de Referência</label>
-                    <select class="form-select" id="mes" th:field="*{mes}" required>
-                        <option value="1">Janeiro</option>
-                        <option value="2">Fevereiro</option>
-                        <option value="3">Março</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Maio</option>
-                        <option value="6">Junho</option>
-                        <option value="7">Julho</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Setembro</option>
-                        <option value="10">Outubro</option>
-                        <option value="11">Novembro</option>
-                        <option value="12">Dezembro</option>
+                    <label for="mes" class="form-label">Mês de Referência:</label>
+                    <select class="form-select" id="mes" name="mes" required>
+                        <option value="1" th:selected="${mesPadrao == 1}">Janeiro</option>
+                        <option value="2" th:selected="${mesPadrao == 2}">Fevereiro</option>
+                        <option value="3" th:selected="${mesPadrao == 3}">Março</option>
+                        <option value="4" th:selected="${mesPadrao == 4}">Abril</option>
+                        <option value="5" th:selected="${mesPadrao == 5}">Maio</option>
+                        <option value="6" th:selected="${mesPadrao == 6}">Junho</option>
+                        <option value="7" th:selected="${mesPadrao == 7}">Julho</option>
+                        <option value="8" th:selected="${mesPadrao == 8}">Agosto</option>
+                        <option value="9" th:selected="${mesPadrao == 9}">Setembro</option>
+                        <option value="10" th:selected="${mesPadrao == 10}">Outubro</option>
+                        <option value="11" th:selected="${mesPadrao == 11}">Novembro</option>
+                        <option value="12" th:selected="${mesPadrao == 12}">Dezembro</option>
                     </select>
                 </div>
-                
+
                 <div class="col-md-6 mb-3">
-                    <label for="ano" class="form-label">Ano</label>
-                    <input type="number" class="form-control" id="ano" th:field="*{ano}" value="2025" required>
+                    <label for="ano" class="form-label">Ano:</label>
+                    <input type="number" class="form-control" id="ano" name="ano" th:value="${anoPadrao}" required>
                 </div>
             </div>
             

@@ -2,6 +2,9 @@ package com.brunobarreto.condominio.controller;
 
 import com.brunobarreto.condominio.dto.DadosRelatorio;
 import com.brunobarreto.condominio.service.RelatorioService;
+
+import java.time.LocalDate;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,11 @@ public class RelatorioController {
     @GetMapping("/novo")
     public String novoRelatorio(Model model) {
         model.addAttribute("dadosRelatorio", new DadosRelatorio());
+        
+        LocalDate hoje = LocalDate.now();
+        model.addAttribute("mesPadrao", hoje.getMonthValue());
+        model.addAttribute("anoPadrao", hoje.getYear());
+        
         return "form-relatorio";
     }
 

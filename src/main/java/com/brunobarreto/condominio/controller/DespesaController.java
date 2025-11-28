@@ -60,8 +60,14 @@ public class DespesaController {
     }
 
     @GetMapping("/novo")
-    public String formulario(Model model) {
+    public String mostrarFormulario(Model model) {
         model.addAttribute("despesa", new Despesa());
+        
+        LocalDate hoje = LocalDate.now();
+        
+        model.addAttribute("mesPadrao", hoje.getMonthValue());
+        model.addAttribute("anoPadrao", hoje.getYear());
+        
         return "form-despesa";
     }
 
