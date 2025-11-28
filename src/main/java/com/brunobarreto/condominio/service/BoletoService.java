@@ -2,9 +2,11 @@ package com.brunobarreto.condominio.service;
 
 import com.brunobarreto.condominio.dto.ListaBoletosDTO;
 import com.brunobarreto.condominio.model.Unidade;
-import com.brunobarreto.condominio.repository.UnidadeRepository; // Import novo
+import com.brunobarreto.condominio.repository.UnidadeRepository;
 import com.brunobarreto.condominio.util.ConversorExtenso;
 import com.lowagie.text.DocumentException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -13,17 +15,17 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Service
 public class BoletoService {
 
     private final TemplateEngine templateEngine;
-    private final UnidadeRepository unidadeRepository; // Injeta o banco
+    private final UnidadeRepository unidadeRepository;
 
     public BoletoService(TemplateEngine templateEngine, UnidadeRepository unidadeRepository) {
         this.templateEngine = templateEngine;
@@ -33,23 +35,31 @@ public class BoletoService {
     // --- CARREGA DO BANCO PRA TELA ---
     public ListaBoletosDTO prepararListaParaEdicao() {
         ListaBoletosDTO form = new ListaBoletosDTO();
+        
+        // Pega a data de HOJE
         LocalDate hoje = LocalDate.now();
         
+        // 1. Mês de Referência = Mês Atual
         form.setMes(hoje.getMonthValue());
         form.setAno(hoje.getYear());
-        form.setDataVencimento(hoje.plusMonths(1).withDayOfMonth(1));
-        form.setDataLimite(hoje.plusMonths(1).withDayOfMonth(5));
+        
+        // 2. Vencimento = Dia 01 do Mês Seguinte
+        form.setDataVencimento(hoje.plusMonths(1).withDayOfMonth(1)); 
+        
+        // 3. Prazo Limite = Dia 05 do Mês Seguinte
+        form.setDataLimite(hoje.plusMonths(1).withDayOfMonth(5)); 
+        
         form.setValorBase(new BigDecimal("500.00")); 
 
         List<ListaBoletosDTO.BoletoIndividual> lista = new ArrayList<>();
         
-        // Pega todos as unidades salvas no banco (Apto 1... Loja)
+        // Pega todas as unidades salvas no banco (Apto 11, 12... Loja)
         List<Unidade> unidadesSalvas = unidadeRepository.findAll();
 
         for (Unidade u : unidadesSalvas) {
             ListaBoletosDTO.BoletoIndividual boleto = new ListaBoletosDTO.BoletoIndividual();
             boleto.setUnidade(u.getNomeUnidade());
-            boleto.setNomeMorador(u.getNomeMorador()); // JÁ VEM COM O NOME SALVO!
+            boleto.setNomeMorador(u.getNomeMorador()); // Já vem com o nome salvo se tiver
             
             // Regra do valor (Se for loja, dobro)
             if (u.getNomeUnidade().contains("Loja")) {
@@ -77,18 +87,20 @@ public class BoletoService {
         // 2. Atualizar nomes no banco e preparar dados
         List<Unidade> unidadesBanco = unidadeRepository.findAll();
         
-        for (int i = 0; i < unidadesBanco.size(); i++) {
+        // Garante que não vai estourar o índice se tiver tamanhos diferentes
+        int tamanho = Math.min(unidadesBanco.size(), form.getBoletos().size());
+
+        for (int i = 0; i < tamanho; i++) {
             Unidade u = unidadesBanco.get(i);
             ListaBoletosDTO.BoletoIndividual formItem = form.getBoletos().get(i);
             
-            // Salva nome se mudou
+            // Salva nome se mudou (Persistência)
             if (!u.getNomeMorador().equals(formItem.getNomeMorador())) {
                 u.setNomeMorador(formItem.getNomeMorador());
                 unidadeRepository.save(u);
             }
             
             // --- LÓGICA DA ISENÇÃO (APTO 51) ---
-            // Verifica se a unidade é o "Apto 51" (ou o nome exato que você cadastrou)
             if (formItem.getUnidade().contains("51")) {
                 formItem.setIsento(true);
                 formItem.setValor(BigDecimal.ZERO);
@@ -100,15 +112,23 @@ public class BoletoService {
             }
         }
 
-        // 3. Gerar PDF
+        // 3. Processar HTML com Thymeleaf (Gera o HTML "Sujo")
         Context context = new Context();
         context.setVariable("form", form); 
+        String htmlSujo = templateEngine.process("template-recibos", context);
 
-        String htmlRenderizado = templateEngine.process("template-recibos", context);
+        // --- 4. A MÁGICA DA CORREÇÃO (JSOUP) ---
+        // O Jsoup pega o HTML e fecha todas as tags, remove lixo e deixa perfeito pro PDF
+        Document doc = Jsoup.parse(htmlSujo);
+        doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml); // Força modo XML estrito
+        String htmlLimpo = doc.html();
         
+        // 5. Gerar PDF
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(htmlRenderizado);
+        
+        // Agora passamos o htmlLimpo em vez do sujo
+        renderer.setDocumentFromString(htmlLimpo);
         renderer.layout();
         renderer.createPDF(outputStream);
 

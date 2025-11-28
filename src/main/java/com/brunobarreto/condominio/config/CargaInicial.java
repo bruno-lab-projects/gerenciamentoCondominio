@@ -49,7 +49,7 @@ public class CargaInicial implements CommandLineRunner {
 
         // 3. UNIDADES PARA BOLETOS (Só cria se a tabela estiver vazia)
         if (unidadeRepository.count() == 0) {
-            String[] listaAptos = {"11", "21", "22", "31", "32", "41", "42", "51", "52", "61"};
+            String[] listaAptos = {"11", "12", "21", "22", "31", "32", "41", "42", "51", "52", "61"};
 
             for (String numero : listaAptos) {
                 Unidade u = new Unidade();

@@ -1,6 +1,8 @@
 package com.brunobarreto.condominio.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,15 +10,19 @@ import java.util.List;
 
 @Data
 public class ListaBoletosDTO {
-    // Dados Comuns
+    
     private Integer mes;
     private Integer ano;
-    private LocalDate dataVencimento;
-    private LocalDate dataLimite;
-    private BigDecimal valorBase;
     private String nomeMesExtenso;
 
-    // Lista de Apartamentos
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataVencimento;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataLimite; 
+
+    private BigDecimal valorBase;
+
     private List<BoletoIndividual> boletos = new ArrayList<>();
 
     @Data

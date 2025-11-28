@@ -3,24 +3,100 @@
 <head>
     <meta charset="UTF-8"/>
     <style>
-        @page { size: A4; margin: 20px; }
-        body { font-family: "Times New Roman", serif; font-size: 14px; color: #000; line-height: 1.4; }
+        /* Configuração da Página A4 */
+        @page { 
+            size: A4; 
+            margin: 1.5cm; /* Margem um pouco menor para caber texto grande */
+        }
         
-        .pagina { page-break-after: always; padding-top: 10px; }
-        .recibo-container { margin-bottom: 40px; } /* Espaço entre Via 1 e Via 2 */
+        body { 
+            /* Fonte Sans-Serif é muito melhor para leitura (Arial/Helvetica) */
+            font-family: Helvetica, Arial, sans-serif; 
+            font-size: 15px; /* Tamanho base aumentado */
+            color: #000; 
+            line-height: 1.6; /* Mais espaço entre as linhas de texto */
+        }
         
-        h2 { text-align: center; font-size: 16px; margin: 0; font-weight: bold; text-transform: uppercase; }
-        h3 { text-align: center; font-size: 14px; margin: 5px 0 15px 0; font-weight: normal; text-transform: uppercase; }
+        .pagina { 
+            page-break-after: always; 
+            height: 100%; /* Força ocupar a altura toda */
+        }
         
-        p { margin: 8px 0; text-align: justify; }
+        /* Cada via do recibo (Síndica e Morador) */
+        .recibo-container { 
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        } 
         
-        .assinatura { margin-top: 30px; border-top: 1px solid #000; width: 60%; padding-top: 5px; }
+        /* Títulos */
+        h2 { 
+            text-align: center; 
+            font-size: 22px; /* Bem grande */
+            margin: 0; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+        }
         
-        /* Linha de corte */
-        .corte { border-top: 1px dashed #000; margin: 30px 0; }
+        h3 { 
+            text-align: center; 
+            font-size: 18px; 
+            margin: 5px 0 30px 0; /* Espaço maior abaixo do título */
+            font-weight: normal; 
+            text-transform: uppercase; 
+        }
         
-        /* Obs de isenção */
-        .obs-isencao { font-weight: bold; margin-top: 20px; text-align: center; }
+        /* Parágrafos de texto */
+        p { 
+            margin: 12px 0; /* Espaço entre parágrafos */
+            text-align: justify; 
+        }
+        
+        /* Destaques em Negrito */
+        strong { font-weight: bold; }
+        
+        /* Espaço Específico para Assinatura (Seu pedido) */
+        .area-assinatura {
+            margin-top: 60px; /* <--- AQUI ESTÁ A FOLGA GRANDE PARA A CANETA */
+            text-align: center; /* Centraliza a linha e o texto */
+        }
+        
+        .linha-assinatura {
+            border-top: 2px solid #000; /* Linha mais grossa */
+            width: 80%; /* Aumentei a largura da linha */
+            margin: 0 auto; /* Centraliza a linha */
+            padding-top: 5px;
+            font-weight: bold;
+        }
+        
+        /* Linha de corte pontilhada */
+        .corte { 
+            border-top: 3px dashed #999; 
+            margin: 40px 0; 
+            position: relative;
+        }
+        
+        /* Ícone de tesoura (opcional, só visual css simples) */
+        .corte::after {
+            content: "✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+            display: block;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            background: #fff;
+            position: absolute;
+            top: -8px;
+            left: 0; 
+            right: 0;
+        }
+        
+        .obs-isencao { 
+            font-weight: bold; 
+            margin-top: 40px; 
+            text-align: center; 
+            font-size: 16px;
+            border: 1px solid #000;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
@@ -53,14 +129,14 @@
                 </p>
 
                 <p>
-                    Vencimento <span th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></span>
-                    podendo ser pago até o dia <span th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></span>,
+                    Vencimento <strong th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></strong>
+                    podendo ser pago até o dia <strong th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></strong>,
                     após essa data será cobrado multa de 10% e juros de 1%.
                 </p>
 
                 <p>
                     Valor <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>. 
-                    Pago no dia ____________________
+                    Pago no dia __________________________
                 </p>
             </div>
 
@@ -70,7 +146,9 @@
                 </p>
             </div>
 
-            <div class="assinatura">Assinatura da síndica ou subsíndica</div>
+            <div class="area-assinatura">
+                <div class="linha-assinatura">Assinatura da síndica ou subsíndica</div>
+            </div>
         </div>
 
         <div class="corte"></div>
@@ -101,14 +179,14 @@
                 </p>
 
                 <p>
-                    Vencimento <span th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></span>
-                    podendo ser pago até o dia <span th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></span>,
+                    Vencimento <strong th:text="${#temporals.format(form.dataVencimento, 'dd/MM/yyyy')}"></strong>
+                    podendo ser pago até o dia <strong th:text="${#temporals.format(form.dataLimite, 'dd/MM/yyyy')}"></strong>,
                     após essa data será cobrado multa de 10% e juros de 1%.
                 </p>
 
                 <p>
                     Valor <strong>R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></strong>. 
-                    Pago no dia ____________________
+                    Pago no dia __________________________
                 </p>
             </div>
 
@@ -118,7 +196,9 @@
                 </p>
             </div>
 
-            <div class="assinatura">Assinatura da síndica ou subsíndica</div>
+            <div class="area-assinatura">
+                <div class="linha-assinatura">Assinatura da síndica ou subsíndica</div>
+            </div>
         </div>
         
     </div>
