@@ -21,6 +21,10 @@ public class DespesaService {
     }
 
     public Despesa salvar(Despesa despesa) {
+        if (despesa.getDescricao() != null) {
+        despesa.setDescricao(despesa.getDescricao().toUpperCase());
+    }
+    
         return despesaRepository.save(despesa);
     }
 

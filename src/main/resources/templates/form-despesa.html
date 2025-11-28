@@ -14,7 +14,7 @@
         <form th:action="@{/despesas}" method="post" th:object="${despesa}">
             <div class="mb-3">
                 <label for="descricao" class="form-label">Descrição</label>
-                <input type="text" class="form-control" id="descricao" th:field="*{descricao}" required>
+                <input type="text" class="form-control" id="descricao" th:field="*{descricao}" required style="text-transform: uppercase;">
             </div>
             
             <div class="mb-3">
@@ -41,7 +41,6 @@
                             <option value="12" th:selected="${mesPadrao == 12}">Dezembro</option>
                         </select>
                     </div>
-                    
                     <div class="col-4">
                         <input type="number" class="form-control" name="anoReferencia" th:value="${anoPadrao}" required>
                     </div>
