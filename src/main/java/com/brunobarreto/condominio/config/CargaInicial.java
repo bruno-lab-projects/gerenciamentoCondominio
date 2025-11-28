@@ -20,13 +20,12 @@ public class CargaInicial implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Verifica se já existe a síndica. Se não, cria.
+        
+        // --- 1. CRIAÇÃO DA SÍNDICA (Se não existir) ---
         if (repository.findByEmail("sindica@predio.com").isEmpty()) {
-            
             Usuario admin = new Usuario();
             admin.setEmail("sindica@predio.com");
             admin.setNome("Síndica");
-            // A senha será criptografada antes de salvar no banco
             admin.setSenha(passwordEncoder.encode("123456")); 
             admin.setPerfil(Perfil.ADMIN);
             admin.setApartamento("101");
@@ -34,7 +33,21 @@ public class CargaInicial implements CommandLineRunner {
             repository.save(admin);
             
             System.out.println("----------------------------------------------------------");
-            System.out.println(">>> USUÁRIO ADMIN CRIADO: sindica@predio.com / 123456 <<<");
+            System.out.println(">>> ADMIN CRIADO: sindica@predio.com / 123456 <<<");
+        }
+
+        // --- 2. CRIAÇÃO DO MORADOR (Se não existir) ---
+        if (repository.findByEmail("morador@predio.com").isEmpty()) {
+            Usuario morador = new Usuario();
+            morador.setEmail("morador@predio.com");
+            morador.setNome("Vizinho do 202"); // Pode mudar o nome aqui
+            morador.setSenha(passwordEncoder.encode("123456")); 
+            morador.setPerfil(Perfil.MORADOR); // <--- IMPORTANTE: Perfil de Morador
+            morador.setApartamento("202");
+            
+            repository.save(morador);
+            
+            System.out.println(">>> MORADOR CRIADO: morador@predio.com / 123456 <<<");
             System.out.println("----------------------------------------------------------");
         }
     }
