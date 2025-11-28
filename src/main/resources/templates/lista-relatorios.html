@@ -51,6 +51,14 @@
                                title="Editar Valores">
                                <i class="bi bi-pencil"></i> Editar
                             </a>
+
+                            <a sec:authorize="hasRole('ADMIN')"
+                                th:href="@{/relatorios/excluir/{id}(id=${relatorio.id})}" 
+                                class="btn btn-outline-dark btn-sm"
+                                title="Excluir Relatório"
+                                onclick="return confirm('Tem certeza que deseja excluir este fechamento? Essa ação não pode ser desfeita.')">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
                         </div>
                     </td>
                 </tr>

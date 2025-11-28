@@ -79,4 +79,10 @@ public class RelatorioController {
         
         return "form-relatorio";
     }
+
+    @GetMapping("/excluir/{id}")
+    public String excluirRelatorio(@PathVariable Long id) {
+        service.excluir(id);
+        return "redirect:/relatorios";
+    }
 }

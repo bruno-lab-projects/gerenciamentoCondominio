@@ -182,4 +182,9 @@ public class RelatorioService {
         renderer.createPDF(os);
         return os.toByteArray();
     }
+
+    // Adicione este método no RelatorioService
+    public void excluir(Long id) {
+        relatorioRepository.deleteById(id);
+    }
 }
