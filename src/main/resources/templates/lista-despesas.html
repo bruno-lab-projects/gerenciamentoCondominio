@@ -72,7 +72,7 @@
         </div>
         
         <div class="mb-3 d-flex gap-2 flex-wrap">
-            <a href="/despesas/novo" class="btn btn-success">
+            <a th:href="@{/despesas/novo(mes=${mesSelecionado}, ano=${anoSelecionado})}" class="btn btn-success">
                 <i class="bi bi-plus-lg"></i> Nova Despesa Manual
             </a>
             <a href="/despesas/padroes/gerenciar" class="btn btn-primary">

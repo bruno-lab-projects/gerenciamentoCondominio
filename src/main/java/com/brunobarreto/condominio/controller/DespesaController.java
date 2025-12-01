@@ -56,13 +56,20 @@ public class DespesaController {
     }
 
     @GetMapping("/novo")
-    public String mostrarFormulario(Model model) {
+    public String mostrarFormulario(Model model,
+                                     @RequestParam(value = "mes", required = false) Integer mes,
+                                     @RequestParam(value = "ano", required = false) Integer ano) {
         model.addAttribute("despesa", new Despesa());
         
-        LocalDate hoje = LocalDate.now();
+        // Se vier mes/ano na URL, usa eles; senão usa a data atual
+        if (mes == null || ano == null) {
+            LocalDate hoje = LocalDate.now();
+            mes = hoje.getMonthValue();
+            ano = hoje.getYear();
+        }
         
-        model.addAttribute("mesPadrao", hoje.getMonthValue());
-        model.addAttribute("anoPadrao", hoje.getYear());
+        model.addAttribute("mesPadrao", mes);
+        model.addAttribute("anoPadrao", ano);
         model.addAttribute("modoEdicao", false);
         
         return "form-despesa";
