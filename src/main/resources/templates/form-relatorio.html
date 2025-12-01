@@ -11,6 +11,12 @@
     <div class="container mt-5">
         <h2 class="mb-4">Gerar Relatório de Prestação de Contas</h2>
         
+        <!-- Indicador visual do período -->
+        <div class="alert alert-info" role="alert">
+            <strong>📅 Período do Relatório:</strong> 
+            <span id="indicadorPeriodo">Selecione o mês e ano abaixo</span>
+        </div>
+        
         <form th:action="@{/relatorios/salvar}" method="post" th:object="${dadosRelatorio}">
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -41,6 +47,13 @@
                 <label for="saldoAnteriorDisplay" class="form-label">Saldo Anterior</label>
                 <input type="text" class="form-control dinheiro" id="saldoAnteriorDisplay" inputmode="numeric" required>
                 <input type="hidden" id="saldoAnterior" name="saldoAnterior" th:field="*{saldoAnterior}">
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="checkPuxarSaldo">
+                    <label class="form-check-label" for="checkPuxarSaldo">
+                        <strong>📥 Puxar saldo do mês anterior automaticamente</strong>
+                    </label>
+                </div>
+                <small class="text-muted">💡 Marque esta opção para buscar o saldo final do mês passado</small>
             </div>
             
             <div class="mb-3">
@@ -78,5 +91,32 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-mask-money@3.0.1/lib/simple-mask-money.min.js"></script>
     <!-- Módulo de Máscara Monetária -->
     <script th:src="@{/js/mascara-dinheiro.js}"></script>
+    <!-- Módulo de Busca de Saldo Anterior -->
+    <script th:src="@{/js/buscar-saldo-anterior.js}"></script>
+    
+    <!-- Script para atualizar indicador visual do período -->
+    <script>
+        const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        
+        function atualizarIndicadorPeriodo() {
+            const mes = document.getElementById('mes').value;
+            const ano = document.getElementById('ano').value;
+            const indicador = document.getElementById('indicadorPeriodo');
+            
+            if (mes && ano) {
+                indicador.innerHTML = `<strong style="font-size: 1.1em;">${nomesMeses[mes - 1]} de ${ano}</strong>`;
+            } else {
+                indicador.textContent = 'Selecione o mês e ano abaixo';
+            }
+        }
+        
+        // Atualiza ao carregar a página
+        document.addEventListener('DOMContentLoaded', atualizarIndicadorPeriodo);
+        
+        // Atualiza quando mudar mês ou ano
+        document.getElementById('mes').addEventListener('change', atualizarIndicadorPeriodo);
+        document.getElementById('ano').addEventListener('change', atualizarIndicadorPeriodo);
+    </script>
 </body>
 </html>
