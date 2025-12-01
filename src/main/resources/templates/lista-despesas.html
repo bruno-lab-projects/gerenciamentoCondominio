@@ -3,65 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Gestão de Condomínio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
-    <style>
-        /* Fontes maiores para desktop */
-        @media (min-width: 769px) {
-            body {
-                font-size: 1.1rem;
-            }
-            h2 {
-                font-size: 2rem;
-            }
-            .table {
-                font-size: 1.05rem;
-            }
-            .btn {
-                font-size: 0.95rem;
-            }
-        }
-        
-        /* Otimizações para mobile */
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 1.5rem;
-            }
-            .table {
-                font-size: 0.85rem;
-            }
-            .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.8rem;
-            }
-            .btn-group-vertical .btn {
-                margin-bottom: 0.25rem;
-            }
-        }
-        
-        /* Botões empilhados apenas em telas muito pequenas */
-        @media (max-width: 576px) {
-            .acoes-despesa {
-                flex-direction: column !important;
-            }
-            .btn-acao-texto {
-                display: none;
-            }
-        }
-        
-        /* Ajusta largura dos botões de ação */
-        .acoes-despesa .btn {
-            max-width: 120px;
-        }
-        
-        @media (max-width: 576px) {
-            .acoes-despesa .btn {
-                max-width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/despesas.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: nav}"></div>
@@ -75,7 +22,7 @@
                     
                     <div class="col-6 col-md-4">
                         <label class="form-label fw-bold">Filtrar por Mês:</label>
-                        <select name="mes" class="form-select">
+                        <select name="mes" id="mesFiltro" class="form-select" onchange="this.form.submit()">
                             <option value="1" th:selected="${mesSelecionado == 1}">Janeiro</option>
                             <option value="2" th:selected="${mesSelecionado == 2}">Fevereiro</option>
                             <option value="3" th:selected="${mesSelecionado == 3}">Março</option>
@@ -93,25 +40,43 @@
 
                     <div class="col-6 col-md-3">
                         <label class="form-label fw-bold">Ano:</label>
-                        <input type="number" name="ano" class="form-control" th:value="${anoSelecionado}">
+                        <input type="number" name="ano" id="anoFiltro" class="form-control" th:value="${anoSelecionado}" onchange="this.form.submit()">
                     </div>
 
-                    <div class="col-6 col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-filter"></i> Filtrar
-                        </button>
-                    </div>
-                    
-                    <div class="col-6 col-md-2">
-                        <a th:href="@{/despesas}" class="btn btn-outline-secondary w-100">Limpar</a>
+                    <div class="col-6 col-md-3">
+                        <a th:href="@{/despesas}" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-clockwise"></i> Limpar Filtro
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!-- DESPESAS RECORRENTES -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-repeat"></i> Despesas Recorrentes</h5>
+            </div>
+            <div class="card-body">
+                <!-- Alerta para despesas não criadas -->
+                <div id="alertaDespesasPendentes" class="alert alert-warning d-none mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>Atenção!</strong> Existem <span id="contadorPendentes">0</span> despesa(s) recorrente(s) que ainda não foram criadas este mês.
+                    Clique nos botões abaixo para adicioná-las.
+                </div>
+                
+                <div class="row g-3" id="despesasPadraoContainer">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
         
-        <div class="mb-3 d-grid d-md-block">
-            <a href="/despesas/novo" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Nova Despesa
+        <div class="mb-3 d-flex gap-2 flex-wrap">
+            <a href="/despesas/novo" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> Nova Despesa Manual
+            </a>
+            <a href="/despesas/padroes/gerenciar" class="btn btn-primary">
+                <i class="bi bi-gear"></i> Gerenciar Recorrentes
             </a>
         </div>
         
@@ -136,7 +101,7 @@
                                    class="btn btn-warning btn-sm">
                                    <i class="bi bi-pencil"></i> <span class="btn-acao-texto">Editar</span>
                                 </a>
-                                <a th:href="@{/despesas/excluir/{id}(id=${despesa.id})}" 
+                                <a th:href="@{/despesas/excluir/{id}(id=${despesa.id}, mes=${mesSelecionado}, ano=${anoSelecionado})}" 
                                    class="btn btn-danger btn-sm"
                                    onclick="return confirm('Tem certeza que deseja excluir?')">
                                    <i class="bi bi-trash"></i> <span class="btn-acao-texto">Excluir</span>
@@ -152,7 +117,63 @@
             <h4>Total de Despesas: <span th:text="${#numbers.formatCurrency(totalGastos)}"></span></h4>
         </div>
     </div>
+
+    <!-- MODAL PARA DESPESAS VARIÁVEIS -->
+    <div class="modal fade" id="modalDespesaVariavel" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitulo"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="valorVariavel" class="form-label">Digite o valor:</label>
+                        <input type="text" class="form-control dinheiro-modal" id="valorVariavel" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarVariavel">
+                        <i class="bi bi-check-lg"></i> Criar Despesa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA DESPESAS FIXAS -->
+    <div class="modal fade" id="modalDespesaFixa" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTituloFixa"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="valorFixo" class="form-label">Valor:</label>
+                        <input type="text" class="form-control dinheiro-modal" id="valorFixo" inputmode="numeric">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="atualizarPadrao">
+                            <label class="form-check-label" for="atualizarPadrao">
+                                Salvar este valor como novo padrão para os próximos meses
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarFixa">
+                        <i class="bi bi-check-lg"></i> Criar Despesa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-mask-money@3.0.1/lib/simple-mask-money.min.js"></script>
+    <script th:src="@{/js/despesas-recorrentes.js}"></script>
 </body>
 </html>

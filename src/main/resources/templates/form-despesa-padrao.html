@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${modoEdicao ? 'Editar Despesa Recorrente' : 'Nova Despesa Recorrente'}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0" th:text="${modoEdicao ? 'Editar Despesa Recorrente' : 'Nova Despesa Recorrente'}"></h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/despesas/padroes/salvar}" th:object="${despesaPadrao}" method="post">
+                            <input type="hidden" th:field="*{id}" th:if="${modoEdicao}">
+                            
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição *</label>
+                                <input type="text" class="form-control" id="descricao" th:field="*{descricao}" 
+                                       placeholder="Ex: EMBASA, COELBA" required>
+                                <small class="form-text text-muted">Nome da despesa (será convertido para maiúsculas)</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo *</label>
+                                <select class="form-select" id="tipo" th:field="*{tipo}" required onchange="toggleValorPadrao()">
+                                    <option value="">Selecione...</option>
+                                    <option value="VARIAVEL">Variável (valor muda todo mês)</option>
+                                    <option value="FIXA">Fixa (valor padrão definido)</option>
+                                </select>
+                                <small class="form-text text-muted">
+                                    Variável: sempre pede o valor ao criar<br>
+                                    Fixa: mantém um valor padrão que pode ser alterado
+                                </small>
+                            </div>
+
+                            <div class="mb-3" id="divValorPadrao">
+                                <label for="valorPadrao" class="form-label">Valor Padrão</label>
+                                <input type="number" class="form-control" id="valorPadrao" th:field="*{valorPadrao}" 
+                                       step="0.01" min="0" placeholder="0.00">
+                                <small class="form-text text-muted">Apenas para despesas fixas</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ordemExibicao" class="form-label">Ordem de Exibição</label>
+                                <input type="number" class="form-control" id="ordemExibicao" th:field="*{ordemExibicao}" 
+                                       min="1" placeholder="Ex: 1, 2, 3...">
+                                <small class="form-text text-muted">Menor número aparece primeiro (deixe em branco para adicionar ao final)</small>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="ativa" th:field="*{ativa}">
+                                <label class="form-check-label" for="ativa">
+                                    Ativa (aparece na lista de despesas recorrentes)
+                                </label>
+                            </div>
+
+                            <div class="d-flex gap-2 justify-content-end">
+                                <a href="/despesas/padroes/gerenciar" class="btn btn-secondary">
+                                    <i class="bi bi-x-lg"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg"></i> Salvar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleValorPadrao() {
+            const tipo = document.getElementById('tipo').value;
+            const divValorPadrao = document.getElementById('divValorPadrao');
+            const inputValorPadrao = document.getElementById('valorPadrao');
+            
+            if (tipo === 'FIXA') {
+                divValorPadrao.style.display = 'block';
+                inputValorPadrao.required = true;
+            } else {
+                divValorPadrao.style.display = 'none';
+                inputValorPadrao.required = false;
+                inputValorPadrao.value = '';
+            }
+        }
+        
+        // Executa ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleValorPadrao();
+        });
+    </script>
+</body>
+</html>

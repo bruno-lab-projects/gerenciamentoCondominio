@@ -2,23 +2,29 @@ package com.brunobarreto.condominio.config;
 
 import com.brunobarreto.condominio.model.Unidade;
 import com.brunobarreto.condominio.model.Usuario;
+import com.brunobarreto.condominio.model.DespesaPadrao;
 import com.brunobarreto.condominio.model.enums.Perfil;
 import com.brunobarreto.condominio.repository.UnidadeRepository;
 import com.brunobarreto.condominio.repository.UsuarioRepository;
+import com.brunobarreto.condominio.repository.DespesaPadraoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.math.BigDecimal;
 
 @Configuration
 public class CargaInicial implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
-    private final UnidadeRepository unidadeRepository; // <--- NOVO
+    private final UnidadeRepository unidadeRepository;
+    private final DespesaPadraoRepository despesaPadraoRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public CargaInicial(UsuarioRepository usuarioRepository, UnidadeRepository unidadeRepository, PasswordEncoder passwordEncoder) {
+    public CargaInicial(UsuarioRepository usuarioRepository, UnidadeRepository unidadeRepository, DespesaPadraoRepository despesaPadraoRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.unidadeRepository = unidadeRepository;
+        this.despesaPadraoRepository = despesaPadraoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -64,6 +70,43 @@ public class CargaInicial implements CommandLineRunner {
             unidadeRepository.save(loja);
             
             System.out.println(">>> UNIDADES PERSONALIZADAS CRIADAS <<<");
+        }
+
+        // 4. DESPESAS PADRÃO (Só cria se a tabela estiver vazia)
+        if (despesaPadraoRepository.count() == 0) {
+            DespesaPadrao embasa = new DespesaPadrao();
+            embasa.setDescricao("EMBASA");
+            embasa.setValorPadrao(null); // Valor variável
+            embasa.setTipo(DespesaPadrao.TipoDespesaPadrao.VARIAVEL);
+            embasa.setOrdemExibicao(1);
+            embasa.setAtiva(true);
+            despesaPadraoRepository.save(embasa);
+
+            DespesaPadrao coelba = new DespesaPadrao();
+            coelba.setDescricao("COELBA");
+            coelba.setValorPadrao(null); // Valor variável
+            coelba.setTipo(DespesaPadrao.TipoDespesaPadrao.VARIAVEL);
+            coelba.setOrdemExibicao(2);
+            coelba.setAtiva(true);
+            despesaPadraoRepository.save(coelba);
+
+            DespesaPadrao elevasol = new DespesaPadrao();
+            elevasol.setDescricao("ELEVASOL");
+            elevasol.setValorPadrao(new BigDecimal("610.00"));
+            elevasol.setTipo(DespesaPadrao.TipoDespesaPadrao.FIXA);
+            elevasol.setOrdemExibicao(3);
+            elevasol.setAtiva(true);
+            despesaPadraoRepository.save(elevasol);
+
+            DespesaPadrao rapazLimpeza = new DespesaPadrao();
+            rapazLimpeza.setDescricao("RAPAZ DA LIMPEZA");
+            rapazLimpeza.setValorPadrao(new BigDecimal("500.00"));
+            rapazLimpeza.setTipo(DespesaPadrao.TipoDespesaPadrao.FIXA);
+            rapazLimpeza.setOrdemExibicao(4);
+            rapazLimpeza.setAtiva(true);
+            despesaPadraoRepository.save(rapazLimpeza);
+
+            System.out.println(">>> DESPESAS PADRÃO CRIADAS <<<");
         }
     }
 }

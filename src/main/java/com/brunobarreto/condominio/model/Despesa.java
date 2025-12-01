@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "despesa")
@@ -28,6 +27,8 @@ public class Despesa {
 
 	private BigDecimal valor;
 
-	private LocalDate data;
+	private Integer mesReferencia;
+	
+	private Integer anoReferencia;
 
 }

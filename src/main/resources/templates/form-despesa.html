@@ -29,6 +29,7 @@
         <form th:action="@{/despesas}" method="post" th:object="${despesa}">
             <!-- Campo oculto para ID em modo edição -->
             <input type="hidden" th:field="*{id}" th:if="${modoEdicao}" />
+            
             <div class="mb-3">
                 <label for="descricao" class="form-label">Descrição</label>
                 <input type="text" class="form-control" id="descricao" th:field="*{descricao}" required style="text-transform: uppercase;">
@@ -63,21 +64,6 @@
                         <input type="number" class="form-control" name="anoReferencia" th:value="${anoPadrao}" required>
                     </div>
                 </div>
-                <small class="text-muted">Selecione o mês a que se refere esta conta.</small>
-            </div>
-            
-            <div class="mb-3">
-                <label for="dataPagamento" class="form-label">
-                    Data do Pagamento <span class="badge bg-info text-dark">Opcional</span>
-                </label>
-                <input type="date" 
-                       class="form-control" 
-                       id="dataPagamento" 
-                       name="dataPagamento"
-                       th:value="${dataPagamento != null ? dataPagamento : ''}">
-                <small class="text-muted">
-                    💡 <strong>Este campo é opcional.</strong> Selecione a data em que pagou esta conta (ex: energia, pintor, etc). Se não preencher, será registrado no dia 1 do mês de referência.
-                </small>
             </div>
             
             <div class="mb-3 d-grid gap-2 d-md-block">
