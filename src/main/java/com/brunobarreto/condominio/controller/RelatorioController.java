@@ -3,6 +3,7 @@ package com.brunobarreto.condominio.controller;
 import com.brunobarreto.condominio.dto.DadosRelatorio;
 import com.brunobarreto.condominio.service.RelatorioService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,17 @@ public class RelatorioController {
     // 2. FORMULÁRIO (Só ADMIN)
     @GetMapping("/novo")
     public String novoRelatorio(Model model) {
-        model.addAttribute("dadosRelatorio", new DadosRelatorio());
+        DadosRelatorio dadosRelatorio = new DadosRelatorio();
+        
+        // Busca o último valor de condomínio usado (se existir)
+        service.listarTodos().stream()
+            .findFirst()
+            .ifPresentOrElse(
+                ultimoRelatorio -> dadosRelatorio.setValorCondominio(ultimoRelatorio.getValorCondominio()),
+                () -> dadosRelatorio.setValorCondominio(new java.math.BigDecimal("500.00")) // Padrão R$ 500
+            );
+        
+        model.addAttribute("dadosRelatorio", dadosRelatorio);
         
         LocalDate hoje = LocalDate.now();
         model.addAttribute("mesPadrao", hoje.getMonthValue());
