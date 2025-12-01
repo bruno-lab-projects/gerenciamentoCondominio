@@ -132,7 +132,11 @@ public class RelatorioService {
 
     // Novo método para carregar os dados na tela de edição
     public DadosRelatorio buscarDadosParaEdicao(Long id) {
-        RelatorioMensal r = relatorioRepository.findById(id).orElseThrow();
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        RelatorioMensal r = relatorioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Relatório não encontrado com ID: " + id));
         
         DadosRelatorio dados = new DadosRelatorio();
         dados.setMes(r.getMes());
@@ -152,8 +156,12 @@ public class RelatorioService {
 
     // --- MÉTODO 3: GERAR O PDF A PARTIR DO BANCO (Download) ---
     public byte[] gerarPdfPorId(Long id) throws DocumentException {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
         // Busca o relatório salvo
-        RelatorioMensal relatorio = relatorioRepository.findById(id).orElseThrow();
+        RelatorioMensal relatorio = relatorioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Relatório não encontrado com ID: " + id));
         
         // Busca as despesas de novo (para listar no detalhe)
         YearMonth anoMes = YearMonth.of(relatorio.getAno(), relatorio.getMes());
@@ -185,6 +193,12 @@ public class RelatorioService {
 
     // Adicione este método no RelatorioService
     public void excluir(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (!relatorioRepository.existsById(id)) {
+            throw new IllegalArgumentException("Relatório não encontrado com ID: " + id);
+        }
         relatorioRepository.deleteById(id);
     }
 }

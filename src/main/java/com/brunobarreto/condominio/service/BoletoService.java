@@ -80,7 +80,7 @@ public class BoletoService {
         
         // 1. Converter número do mês para Nome (Ex: 11 -> NOVEMBRO)
         String nomeMes = Month.of(form.getMes())
-                .getDisplayName(TextStyle.FULL, new Locale("pt", "BR"))
+                .getDisplayName(TextStyle.FULL, Locale.of("pt", "BR"))
                 .toUpperCase();
         form.setNomeMesExtenso(nomeMes);
 

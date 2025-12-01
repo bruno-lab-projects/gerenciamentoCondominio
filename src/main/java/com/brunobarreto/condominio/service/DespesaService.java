@@ -29,6 +29,12 @@ public class DespesaService {
     }
 
     public void excluir(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (!despesaRepository.existsById(id)) {
+            throw new IllegalArgumentException("Despesa não encontrada com ID: " + id);
+        }
         despesaRepository.deleteById(id);
     }
 

@@ -32,11 +32,18 @@ public class BoletoController {
     @PostMapping("/gerar-lote")
     public ResponseEntity<byte[]> gerarLote(@ModelAttribute ListaBoletosDTO form) {
         try {
+            if (form == null || form.getBoletos() == null || form.getBoletos().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            
             byte[] pdf = boletoService.gerarPdfLote(form);
             
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=recibos_condominio.pdf");
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=recibos_condominio.pdf")
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .headers(headers)
                     .body(pdf);
         } catch (Exception e) {
             e.printStackTrace(); // Mostra o erro no console se der ruim

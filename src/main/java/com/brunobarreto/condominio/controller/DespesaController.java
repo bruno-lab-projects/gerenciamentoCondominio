@@ -74,6 +74,9 @@ public class DespesaController {
     
     @GetMapping("/editar/{id}")
     public String editarFormulario(@PathVariable Long id, Model model) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
         Despesa despesa = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Despesa não encontrada: " + id));
         

@@ -3,7 +3,6 @@ package com.brunobarreto.condominio.controller;
 import com.brunobarreto.condominio.dto.DadosRelatorio;
 import com.brunobarreto.condominio.service.RelatorioService;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.http.HttpHeaders;
@@ -67,10 +66,18 @@ public class RelatorioController {
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> baixarPdf(@PathVariable Long id) {
         try {
+            if (id == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            
             byte[] pdf = service.gerarPdfPorId(id);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf");
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .headers(headers)
                     .body(pdf);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
