@@ -19,7 +19,10 @@
         
         .pagina { 
             page-break-after: always; 
-            height: 100%; /* Força ocupar a altura toda */
+        }
+        
+        .pagina:last-child {
+            page-break-after: avoid; /* Remove quebra de página do último recibo */
         }
         
         /* Cada via do recibo (Síndica e Morador) */

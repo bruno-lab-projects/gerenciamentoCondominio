@@ -67,6 +67,24 @@ public class DespesaController {
         
         model.addAttribute("mesPadrao", hoje.getMonthValue());
         model.addAttribute("anoPadrao", hoje.getYear());
+        model.addAttribute("modoEdicao", false);
+        
+        return "form-despesa";
+    }
+    
+    @GetMapping("/editar/{id}")
+    public String editarFormulario(@PathVariable Long id, Model model) {
+        Despesa despesa = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Despesa não encontrada: " + id));
+        
+        model.addAttribute("despesa", despesa);
+        
+        // Preenche mês e ano da despesa existente
+        LocalDate dataDespesa = despesa.getData();
+        model.addAttribute("mesPadrao", dataDespesa.getMonthValue());
+        model.addAttribute("anoPadrao", dataDespesa.getYear());
+        model.addAttribute("dataPagamento", dataDespesa.toString()); // Formato yyyy-MM-dd para input type="date"
+        model.addAttribute("modoEdicao", true);
         
         return "form-despesa";
     }
@@ -74,15 +92,25 @@ public class DespesaController {
     @PostMapping
     public String salvar(Despesa despesa,
                          @RequestParam("mesReferencia") Integer mes,
-                         @RequestParam("anoReferencia") Integer ano) {
+                         @RequestParam("anoReferencia") Integer ano,
+                         @RequestParam(value = "dataPagamento", required = false) String dataPagamento) {
         
         if (mes < 1 || mes > 12 || ano < 2000 || ano > 2100) {
             return "redirect:/despesas?erro=data_invalida";
         }
 
         try {
-            LocalDate dataFormatada = LocalDate.of(ano, mes, 1);
-            despesa.setData(dataFormatada);
+            LocalDate dataFinal;
+            
+            // Se a data do pagamento foi informada, usa ela
+            if (dataPagamento != null && !dataPagamento.isEmpty()) {
+                dataFinal = LocalDate.parse(dataPagamento);
+            } else {
+                // Senão, usa o dia 1 do mês de referência
+                dataFinal = LocalDate.of(ano, mes, 1);
+            }
+            
+            despesa.setData(dataFinal);
             
             despesaService.salvar(despesa);
             

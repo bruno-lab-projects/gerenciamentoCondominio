@@ -7,63 +7,105 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        /* Fontes maiores para desktop */
+        @media (min-width: 769px) {
+            body {
+                font-size: 1.1rem;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            .table {
+                font-size: 1.05rem;
+            }
+            .btn {
+                font-size: 0.95rem;
+            }
+        }
+        
+        /* Otimizações para mobile */
+        @media (max-width: 768px) {
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            .btn-group .btn {
+                width: 100%;
+                text-align: left;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <div th:replace="~{fragments/navbar :: nav}"></div>
 
     <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Relatórios Mensais</h2>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <h2 class="mb-0">Relatórios Mensais</h2>
             
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/relatorios/novo}" class="btn btn-primary">
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/relatorios/novo}" class="btn btn-primary w-100 w-md-auto">
                 <i class="bi bi-plus-lg"></i> Novo Fechamento
             </a>
         </div>
 
-        <table class="table table-hover table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Período</th>
-                    <th>Saldo Final</th>
-                    <th style="width: 180px;">Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="relatorio : ${relatorios}">
-                    <td>
-                        <strong th:text="${relatorio.mes} + '/' + ${relatorio.ano}"></strong>
-                    </td>
-                    
-                    <td th:text="${#numbers.formatCurrency(relatorio.saldoAtual)}"></td>
-                    
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a th:href="@{/relatorios/download/{id}(id=${relatorio.id})}" 
-                               class="btn btn-outline-danger btn-sm"
-                               title="Baixar PDF">
-                               <i class="bi bi-file-pdf"></i> PDF
-                            </a>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Período</th>
+                        <th>Saldo Final</th>
+                        <th style="min-width: 180px;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="relatorio : ${relatorios}">
+                        <td>
+                            <strong th:text="${relatorio.mes} + '/' + ${relatorio.ano}"></strong>
+                        </td>
+                        
+                        <td th:text="${#numbers.formatCurrency(relatorio.saldoAtual)}"></td>
+                        
+                        <td>
+                            <div class="btn-group btn-group-sm d-flex justify-content-center" role="group" style="gap: 0.25rem;">
+                                <a th:href="@{/relatorios/download/{id}(id=${relatorio.id})}" 
+                                   class="btn btn-outline-danger"
+                                   title="Baixar PDF"
+                                   style="max-width: 90px;">
+                                   <i class="bi bi-file-pdf"></i> <span>PDF</span>
+                                </a>
 
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/relatorios/editar/{id}(id=${relatorio.id})}" 
-                               class="btn btn-outline-primary btn-sm"
-                               title="Editar Valores">
-                               <i class="bi bi-pencil"></i> Editar
-                            </a>
+                                <a sec:authorize="hasRole('ADMIN')"
+                                   th:href="@{/relatorios/editar/{id}(id=${relatorio.id})}" 
+                                   class="btn btn-outline-primary"
+                                   title="Editar Valores"
+                                   style="max-width: 100px;">
+                                   <i class="bi bi-pencil"></i> <span>Editar</span>
+                                </a>
 
-                            <a sec:authorize="hasRole('ADMIN')"
-                                th:href="@{/relatorios/excluir/{id}(id=${relatorio.id})}" 
-                                class="btn btn-outline-dark btn-sm"
-                                title="Excluir Relatório"
-                                onclick="return confirm('Tem certeza que deseja excluir este fechamento? Essa ação não pode ser desfeita.')">
-                                <i class="bi bi-trash"></i> Excluir
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                                <a sec:authorize="hasRole('ADMIN')"
+                                    th:href="@{/relatorios/excluir/{id}(id=${relatorio.id})}" 
+                                    class="btn btn-outline-dark"
+                                    title="Excluir Relatório"
+                                    onclick="return confirm('Tem certeza que deseja excluir este fechamento? Essa ação não pode ser desfeita.')"
+                                    style="max-width: 110px;">
+                                    <i class="bi bi-trash"></i> <span>Excluir</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         
         <div th:if="${relatorios.empty}" class="alert alert-warning">
             Nenhum relatório foi fechado ainda.
