@@ -22,6 +22,7 @@ public class RelatorioApiController {
 
     /**
      * Busca o saldo do mês anterior com base no mês/ano informado
+     * Se houver múltiplos relatórios no mesmo mês, retorna o mais recente
      * @param mes Mês do relatório atual (1-12)
      * @param ano Ano do relatório atual
      * @return Saldo atual do mês anterior ou 204 No Content se não encontrado
@@ -38,9 +39,10 @@ public class RelatorioApiController {
         Integer mesAnterior = dataAnterior.getMonthValue();
         Integer anoAnterior = dataAnterior.getYear();
         
-        // Busca relatório do mês anterior
+        // Busca o relatório MAIS RECENTE do mês anterior
+        // Importante: se houver múltiplos relatórios, pega o último gerado
         Optional<RelatorioMensal> relatorioAnterior = 
-                relatorioRepository.findByMesAndAno(mesAnterior, anoAnterior);
+                relatorioRepository.findMaisRecenteByMesAndAno(mesAnterior, anoAnterior);
         
         // Se encontrou, retorna o saldoAtual, senão retorna No Content
         return relatorioAnterior

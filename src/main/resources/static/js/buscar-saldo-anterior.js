@@ -128,7 +128,8 @@ function buscarSaldoAnterior() {
                 // Confirmação visual de sucesso
                 alert(
                     `✓ Saldo de ${nomeMesAnterior}/${anoAnterior} carregado com sucesso!\n\n` +
-                    `Valor: ${campoDisplay.value}`
+                    `Valor: ${campoDisplay.value}\n\n` +
+                    `📌 Nota: Se houver mais de um relatório desse mês, o sistema busca o mais recente.`
                 );
             }
         })
