@@ -38,13 +38,15 @@
             </div>
             
             <div class="mb-3">
-                <label for="saldoAnterior" class="form-label">Saldo Anterior</label>
-                <input type="text" class="form-control dinheiro" id="saldoAnterior" th:field="*{saldoAnterior}" inputmode="numeric" required>
+                <label for="saldoAnteriorDisplay" class="form-label">Saldo Anterior</label>
+                <input type="text" class="form-control dinheiro" id="saldoAnteriorDisplay" inputmode="numeric" required>
+                <input type="hidden" id="saldoAnterior" name="saldoAnterior" th:field="*{saldoAnterior}">
             </div>
             
             <div class="mb-3">
-                <label for="valorCondominio" class="form-label">Valor do Condomínio</label>
-                <input type="text" class="form-control dinheiro" id="valorCondominio" th:field="*{valorCondominio}" inputmode="numeric" required>
+                <label for="valorCondominioDisplay" class="form-label">Valor do Condomínio</label>
+                <input type="text" class="form-control dinheiro" id="valorCondominioDisplay" inputmode="numeric" required>
+                <input type="hidden" id="valorCondominio" name="valorCondominio" th:field="*{valorCondominio}">
             </div>
             
             <div class="row mb-3">

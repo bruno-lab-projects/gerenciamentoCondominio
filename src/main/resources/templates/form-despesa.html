@@ -18,8 +18,9 @@
             </div>
             
             <div class="mb-3">
-                <label for="valor" class="form-label">Valor</label>
-                <input type="text" class="form-control dinheiro" id="valor" th:field="*{valor}" inputmode="numeric" required>
+                <label for="valorDisplay" class="form-label">Valor</label>
+                <input type="text" class="form-control dinheiro" id="valorDisplay" inputmode="numeric" required>
+                <input type="hidden" id="valor" name="valor" th:field="*{valor}">
             </div>
             
             <div class="mb-3">
