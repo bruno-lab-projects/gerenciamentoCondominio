@@ -7,6 +7,7 @@ import com.brunobarreto.condominio.util.ConversorExtenso;
 import com.lowagie.text.DocumentException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -26,6 +27,9 @@ public class BoletoService {
 
     private final TemplateEngine templateEngine;
     private final UnidadeRepository unidadeRepository;
+    
+    @Value("${condominio.sindica.nome:}")
+    private String nomeSindica;
 
     public BoletoService(TemplateEngine templateEngine, UnidadeRepository unidadeRepository) {
         this.templateEngine = templateEngine;
@@ -114,7 +118,14 @@ public class BoletoService {
 
         // 3. Processar HTML com Thymeleaf (Gera o HTML "Sujo")
         Context context = new Context();
-        context.setVariable("form", form); 
+        context.setVariable("form", form);
+        
+        // Define texto da assinatura: usa nome se configurado, senão usa texto padrão
+        String textoAssinatura = (nomeSindica != null && !nomeSindica.trim().isEmpty()) 
+            ? nomeSindica 
+            : "Assinatura da síndica ou subsíndica";
+        context.setVariable("textoAssinatura", textoAssinatura);
+        
         String htmlSujo = templateEngine.process("template-recibos", context);
 
         // --- 4. A MÁGICA DA CORREÇÃO (JSOUP) ---
