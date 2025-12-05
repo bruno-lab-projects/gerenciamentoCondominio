@@ -2,6 +2,7 @@ package com.brunobarreto.condominio.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -22,8 +24,9 @@ public class SecurityConfig {
                 // Página de login é pública
                 .requestMatchers("/login").permitAll()
                 
-                // Só ADMIN pode mexer em despesas
+                // Só ADMIN pode mexer em despesas e boletos
                 .requestMatchers("/despesas/**").hasRole("ADMIN")
+                .requestMatchers("/boletos/**").hasRole("ADMIN")
                 
                 // Ambos podem ver relatórios
                 .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MORADOR")
