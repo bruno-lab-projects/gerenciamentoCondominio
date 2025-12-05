@@ -60,14 +60,19 @@
         /* Espaço Específico para Assinatura (Seu pedido) */
         .area-assinatura {
             margin-top: 60px; /* <--- AQUI ESTÁ A FOLGA GRANDE PARA A CANETA */
-            text-align: center; /* Centraliza a linha e o texto */
+            text-align: left; /* Alinha à esquerda */
         }
         
         .linha-assinatura {
             border-top: 2px solid #000; /* Linha mais grossa */
-            width: 80%; /* Aumentei a largura da linha */
-            margin: 0 auto; /* Centraliza a linha */
+            width: 60%; /* Largura ajustada */
+            margin: 0; /* Remove centralização */
             padding-top: 5px;
+            font-weight: bold;
+        }
+        
+        .mes-ano-vermelho {
+            color: #FF0000; /* Vermelho */
             font-weight: bold;
         }
         
@@ -112,7 +117,7 @@
             
             <p>
                 Valor da taxa de condomínio do mês de 
-                <strong th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
+                <strong class="mes-ano-vermelho" th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
                 <span th:if="${!item.isento}">R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></span>
                 <span th:if="${item.isento}">ISENTO</span>
             </p>
@@ -162,7 +167,7 @@
             
             <p>
                 Valor da taxa de condomínio do mês de 
-                <strong th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
+                <strong class="mes-ano-vermelho" th:text="${form.nomeMesExtenso} + '/' + ${form.ano}"></strong>:
                 <span th:if="${!item.isento}">R$ <span th:text="${#numbers.formatDecimal(item.valor, 1, 'POINT', 2, 'COMMA')}"></span></span>
                 <span th:if="${item.isento}">ISENTO</span>
             </p>
