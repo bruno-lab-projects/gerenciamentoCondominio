@@ -138,9 +138,14 @@ public class RelatorioService {
         BigDecimal receitaAptos = relatorio.getValorCondominio().multiply(new BigDecimal(relatorio.getQtdePagantesApto()));
         BigDecimal receitaLoja = relatorio.getValorCondominio().multiply(new BigDecimal("2")).multiply(new BigDecimal(relatorio.getQtdePagantesLoja()));
 
+        String[] meses = {"", "janeiro", "fevereiro", "março", "abril", "maio", "junho", 
+                          "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"};
+        String nomeMes = meses[relatorio.getMes()];
+
         Context context = new Context();
         context.setVariable("dados", relatorio);
         context.setVariable("despesas", despesas);
+        context.setVariable("nomeMes", nomeMes);
         context.setVariable("receitaAptos", receitaAptos);
         context.setVariable("receitaLoja", receitaLoja);
         context.setVariable("receitaTotal", relatorio.getReceitaTotal());

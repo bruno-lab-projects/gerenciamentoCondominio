@@ -7,7 +7,7 @@
         body { font-family: sans-serif; font-size: 14px; }
         .cabecalho { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
         .titulo-predio { font-size: 18px; font-weight: bold; text-transform: uppercase; }
-        .periodo { color: #666; margin-top: 5px; }
+        .periodo { color: #000000; margin-top: 5px; font-size: 16px; font-weight: bold; }
         
         .caixa-resumo { border: 1px solid #000; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; }
         .linha-resumo { margin-bottom: 5px; font-size: 14px; }
@@ -36,7 +36,7 @@
         <div class="titulo-predio">Edifício Maroim</div>
         <h3>Prestação de Contas Mensal</h3>
         <div class="periodo">
-            Referência: <span th:text="${dados.mes} + '/' + ${dados.ano}"></span>
+            Referência: <span th:text="${#strings.capitalize(nomeMes)} + ' de ' + ${dados.ano}"></span>
         </div>
     </div>
 
@@ -50,12 +50,12 @@
             <span class="verde" th:text="${#numbers.formatCurrency(receitaTotal)}"></span>
             
             <br/>
-            <span style="font-size: 11px; color: #555; margin-left: 20px;">
+            <span style="font-size: 11px; color: #000000; margin-left: 20px;">
                 ↳ Apts (<span th:text="${dados.qtdePagantesApto}"></span> pag.): 
                 <span th:text="${#numbers.formatCurrency(receitaAptos)}"></span>
             </span>
             <br/>
-            <span style="font-size: 11px; color: #555; margin-left: 20px;">
+            <span style="font-size: 11px; color: #000000; margin-left: 20px;">
                 ↳ Loja (<span th:text="${dados.qtdePagantesLoja}"></span> pag.): 
                 <span th:text="${#numbers.formatCurrency(receitaLoja)}"></span>
             </span>
