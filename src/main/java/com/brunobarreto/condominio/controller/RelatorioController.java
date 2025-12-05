@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class RelatorioController {
 
     // 2. FORMULÁRIO (Só ADMIN)
     @GetMapping("/novo")
+    @PreAuthorize("hasRole('ADMIN')")
     public String novoRelatorio(Model model) {
         DadosRelatorio dadosRelatorio = new DadosRelatorio();
         
@@ -57,6 +59,7 @@ public class RelatorioController {
 
     // 3. SALVAR (Só ADMIN) - Agora salva e volta pra lista
     @PostMapping("/salvar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String salvarRelatorio(DadosRelatorio dados) {
         service.processarESalvarRelatorio(dados);
         return "redirect:/relatorios";
@@ -86,6 +89,7 @@ public class RelatorioController {
 
     // Rota para abrir o formulário de edição
     @GetMapping("/editar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editarRelatorio(@PathVariable Long id, Model model) {
         // Busca os dados antigos convertidos para DTO
         DadosRelatorio dadosAntigos = service.buscarDadosParaEdicao(id);
@@ -99,6 +103,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/excluir/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String excluirRelatorio(@PathVariable Long id) {
         service.excluir(id);
         return "redirect:/relatorios";
