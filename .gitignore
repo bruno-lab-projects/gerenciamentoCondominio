@@ -24,7 +24,8 @@ bin/
 # Logs
 *.log
 
-# Variáveis de ambiente e segredos (MUITO IMPORTANTE NÃO SUBIR ISSO)
+# Variáveis de ambiente e segredos
 .env
 application-local.properties
 CONTEXT.md
+planejamento.md
