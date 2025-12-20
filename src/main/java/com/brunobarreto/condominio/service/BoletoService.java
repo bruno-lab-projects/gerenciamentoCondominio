@@ -5,9 +5,11 @@ import com.brunobarreto.condominio.model.Unidade;
 import com.brunobarreto.condominio.repository.UnidadeRepository;
 import com.brunobarreto.condominio.util.ConversorExtenso;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -137,6 +139,14 @@ public class BoletoService {
         // 5. Gerar PDF
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
+        
+        // Registrar a fonte Allura personalizada
+        try {
+            String fontPath = new ClassPathResource("static/fonts/Allura-Regular.ttf").getURL().toString();
+            renderer.getFontResolver().addFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar fonte Allura: " + e.getMessage());
+        }
         
         // Agora passamos o htmlLimpo em vez do sujo
         renderer.setDocumentFromString(htmlLimpo);
