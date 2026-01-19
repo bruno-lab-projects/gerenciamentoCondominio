@@ -23,8 +23,11 @@ bin/
 # Logs
 *.log
 
-# Variáveis de ambiente e segredos
+# Variáveis de ambiente e segredos (NUNCA COMMITAR!)
 .env
+.env.local
+.env.production
 application-local.properties
+application-prod.properties
 CONTEXT.md
 planejamento.md

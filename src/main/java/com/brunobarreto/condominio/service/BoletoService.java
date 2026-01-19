@@ -123,9 +123,11 @@ public class BoletoService {
         context.setVariable("form", form);
         
         // Define texto da assinatura: usa nome se configurado, senão usa texto padrão
+        System.out.println("DEBUG - Valor de nomeSindica: [" + nomeSindica + "]");
         String textoAssinatura = (nomeSindica != null && !nomeSindica.trim().isEmpty()) 
             ? nomeSindica 
             : "Assinatura da síndica ou subsíndica";
+        System.out.println("DEBUG - Texto assinatura definido: [" + textoAssinatura + "]");
         context.setVariable("textoAssinatura", textoAssinatura);
         
         String htmlSujo = templateEngine.process("template-recibos", context);

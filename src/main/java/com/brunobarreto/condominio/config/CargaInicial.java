@@ -7,6 +7,7 @@ import com.brunobarreto.condominio.model.enums.Perfil;
 import com.brunobarreto.condominio.repository.UnidadeRepository;
 import com.brunobarreto.condominio.repository.UsuarioRepository;
 import com.brunobarreto.condominio.repository.DespesaPadraoRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,31 @@ public class CargaInicial implements CommandLineRunner {
     private final DespesaPadraoRepository despesaPadraoRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Injeção das credenciais via application.properties (que vêm de variáveis de ambiente)
+    @Value("${app.admin.email}")
+    private String adminEmail;
+    
+    @Value("${app.admin.password}")
+    private String adminPassword;
+    
+    @Value("${app.admin.name}")
+    private String adminName;
+    
+    @Value("${app.admin.apartment}")
+    private String adminApartment;
+    
+    @Value("${app.morador.email}")
+    private String moradorEmail;
+    
+    @Value("${app.morador.password}")
+    private String moradorPassword;
+    
+    @Value("${app.morador.name}")
+    private String moradorName;
+    
+    @Value("${app.morador.apartment}")
+    private String moradorApartment;
+
     public CargaInicial(UsuarioRepository usuarioRepository, UnidadeRepository unidadeRepository, DespesaPadraoRepository despesaPadraoRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.unidadeRepository = unidadeRepository;
@@ -31,26 +57,28 @@ public class CargaInicial implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        // 1. Síndica
-        if (usuarioRepository.findByEmail("sindica@predio.com").isEmpty()) {
+        // 1. Síndica (credenciais vindas de variáveis de ambiente)
+        if (usuarioRepository.findByEmail(adminEmail).isEmpty()) {
             Usuario admin = new Usuario();
-            admin.setEmail("sindica@predio.com");
-            admin.setNome("Síndica");
-            admin.setSenha(passwordEncoder.encode("123456")); 
+            admin.setEmail(adminEmail);
+            admin.setNome(adminName);
+            admin.setSenha(passwordEncoder.encode(adminPassword)); 
             admin.setPerfil(Perfil.ADMIN);
-            admin.setApartamento("101");
+            admin.setApartamento(adminApartment);
             usuarioRepository.save(admin);
+            System.out.println(">>> USUÁRIO ADMIN CRIADO: " + adminEmail);
         }
 
-        // 2. Morador Teste
-        if (usuarioRepository.findByEmail("morador@predio.com").isEmpty()) {
+        // 2. Morador Teste (credenciais vindas de variáveis de ambiente)
+        if (usuarioRepository.findByEmail(moradorEmail).isEmpty()) {
             Usuario morador = new Usuario();
-            morador.setEmail("morador@predio.com");
-            morador.setNome("Vizinho do 202");
-            morador.setSenha(passwordEncoder.encode("123456")); 
+            morador.setEmail(moradorEmail);
+            morador.setNome(moradorName);
+            morador.setSenha(passwordEncoder.encode(moradorPassword)); 
             morador.setPerfil(Perfil.MORADOR);
-            morador.setApartamento("202");
+            morador.setApartamento(moradorApartment);
             usuarioRepository.save(morador);
+            System.out.println(">>> USUÁRIO MORADOR CRIADO: " + moradorEmail);
         }
 
         // 3. UNIDADES PARA BOLETOS (Só cria se a tabela estiver vazia)

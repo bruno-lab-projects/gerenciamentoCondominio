@@ -112,46 +112,74 @@ Implementação completa com **Spring Security**:
 
 ### ✅ Pré-requisitos
 
-* Java 17 ou superior
+* Java 21 ou superior
 * Maven instalado
-* PostgreSQL em execução
-
-Crie um banco de dados chamado:
-
-```sql
-condominio_db
-```
+* Docker e Docker Compose (para o PostgreSQL)
 
 ---
 
-### 📦 Instalação
+### 📦 Instalação Rápida
 
-1. Clone o repositório:
+1. **Clone o repositório:**
 
 ```bash
-git clone https://github.com/brunombs/gerenciamentoCondominio.git
+git clone https://github.com/bruno-lab-projects/gerenciamentoCondominio.git
 cd gerenciamentoCondominio
 ```
 
-2. Configure o banco de dados em `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/condominio_db
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
-```
-
-3. Execute a aplicação:
+2. **Configure as credenciais:**
 
 ```bash
-mvn spring-boot:run
+# Copie o arquivo de exemplo
+cp .env.example .env
+
+# Edite com suas credenciais
+nano .env
 ```
 
-4. Acesse no navegador:
+**Configuração mínima do `.env`:**
+```env
+ADMIN_EMAIL=sindica@seucondominio.com
+ADMIN_PASSWORD=SuaSenhaSegura@2026
+DB_PASSWORD=senhaDoPostgres
+```
+
+📖 **Para configuração detalhada, veja:** [CREDENCIAIS.md](CREDENCIAIS.md)
+
+3. **Inicie o banco de dados:**
+
+```bash
+docker-compose up -d
+```
+
+4. **Execute a aplicação:**
+
+```bash
+./mvnw spring-boot:run
+```
+
+5. **Acesse no navegador:**
 
 ```
-http://localhost:8080
+http://localhost:8082
 ```
+
+**Login padrão:**
+- Email: `sindica@predio.com` (ou o configurado no `.env`)
+- Senha: `123456` (ou a configurada no `.env`)
+
+---
+
+### 🔒 Segurança
+
+⚠️ **IMPORTANTE:** Este projeto usa variáveis de ambiente para credenciais sensíveis.
+
+- ✅ Arquivo `.env` **NÃO** é commitado no Git
+- ✅ Use `.env.example` como template
+- ✅ Senhas são criptografadas com BCrypt
+- ✅ Configuração diferente para dev/produção
+
+📖 **Guia completo:** [CREDENCIAIS.md](CREDENCIAIS.md)
 
 ---
 
