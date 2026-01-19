@@ -3,7 +3,6 @@ target/
 *.class
 
 # Eclipse / VS Code / IntelliJ (arquivos de configuração da IDE)
-.mvn/
 .vscode/
 .idea/
 *.iml
