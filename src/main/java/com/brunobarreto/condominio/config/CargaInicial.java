@@ -58,7 +58,9 @@ public class CargaInicial implements CommandLineRunner {
     public void run(String... args) throws Exception {
         
         // 1. Síndica (credenciais vindas de variáveis de ambiente)
-        if (usuarioRepository.findByEmail(adminEmail).isEmpty()) {
+        // SEMPRE atualiza se as variáveis mudarem
+        var adminExistente = usuarioRepository.findByEmail(adminEmail);
+        if (adminExistente.isEmpty()) {
             Usuario admin = new Usuario();
             admin.setEmail(adminEmail);
             admin.setNome(adminName);
@@ -67,10 +69,20 @@ public class CargaInicial implements CommandLineRunner {
             admin.setApartamento(adminApartment);
             usuarioRepository.save(admin);
             System.out.println(">>> USUÁRIO ADMIN CRIADO: " + adminEmail);
+        } else {
+            // Atualiza dados se o usuário já existe
+            Usuario admin = adminExistente.get();
+            admin.setNome(adminName);
+            admin.setSenha(passwordEncoder.encode(adminPassword)); 
+            admin.setApartamento(adminApartment);
+            usuarioRepository.save(admin);
+            System.out.println(">>> USUÁRIO ADMIN ATUALIZADO: " + adminEmail);
         }
 
         // 2. Morador Teste (credenciais vindas de variáveis de ambiente)
-        if (usuarioRepository.findByEmail(moradorEmail).isEmpty()) {
+        // SEMPRE atualiza se as variáveis mudarem
+        var moradorExistente = usuarioRepository.findByEmail(moradorEmail);
+        if (moradorExistente.isEmpty()) {
             Usuario morador = new Usuario();
             morador.setEmail(moradorEmail);
             morador.setNome(moradorName);
@@ -79,6 +91,14 @@ public class CargaInicial implements CommandLineRunner {
             morador.setApartamento(moradorApartment);
             usuarioRepository.save(morador);
             System.out.println(">>> USUÁRIO MORADOR CRIADO: " + moradorEmail);
+        } else {
+            // Atualiza dados se o usuário já existe
+            Usuario morador = moradorExistente.get();
+            morador.setNome(moradorName);
+            morador.setSenha(passwordEncoder.encode(moradorPassword));
+            morador.setApartamento(moradorApartment);
+            usuarioRepository.save(morador);
+            System.out.println(">>> USUÁRIO MORADOR ATUALIZADO: " + moradorEmail);
         }
 
         // 3. UNIDADES PARA BOLETOS (Só cria se a tabela estiver vazia)
