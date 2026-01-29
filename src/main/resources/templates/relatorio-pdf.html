@@ -43,26 +43,25 @@
     <div class="caixa-resumo">
         <div class="linha-resumo">
             Saldo Anterior: 
-            <span class="negrito" th:text="${#numbers.formatCurrency(dados.saldoAnterior)}"></span>
+            <span class="negrito">R$ <span th:text="${#numbers.formatDecimal(dados.saldoAnterior, 1, 'POINT', 2, 'COMMA')}"></span></span>
         </div>
         <div class="linha-resumo">
             Receita (+): 
-            <span class="verde" th:text="${#numbers.formatCurrency(receitaTotal)}"></span>
-            
+            <span class="verde">R$ <span th:text="${#numbers.formatDecimal(receitaTotal, 1, 'POINT', 2, 'COMMA')}"></span></span>
             <br/>
             <span style="font-size: 11px; color: #000000; margin-left: 20px;">
                 ↳ Apts (<span th:text="${dados.qtdePagantesApto}"></span> pag.): 
-                <span th:text="${#numbers.formatCurrency(receitaAptos)}"></span>
+                R$ <span th:text="${#numbers.formatDecimal(receitaAptos, 1, 'POINT', 2, 'COMMA')}"></span>
             </span>
             <br/>
             <span style="font-size: 11px; color: #000000; margin-left: 20px;">
                 ↳ Loja (<span th:text="${dados.qtdePagantesLoja}"></span> pag.): 
-                <span th:text="${#numbers.formatCurrency(receitaLoja)}"></span>
+                R$ <span th:text="${#numbers.formatDecimal(receitaLoja, 1, 'POINT', 2, 'COMMA')}"></span>
             </span>
         </div>
         <div class="linha-resumo">
             Despesas (-): 
-            <span class="vermelho" th:text="${#numbers.formatCurrency(despesaTotal)}"></span>
+            <span class="vermelho">R$ <span th:text="${#numbers.formatDecimal(despesaTotal, 1, 'POINT', 2, 'COMMA')}"></span></span>
         </div>
     </div>
 
@@ -77,7 +76,7 @@
         <tbody>
             <tr th:each="despesa : ${despesas}">
                 <td th:text="${despesa.descricao}"></td>
-                <td th:text="${#numbers.formatCurrency(despesa.valor)}"></td>
+                <td>R$ <span th:text="${#numbers.formatDecimal(despesa.valor, 1, 'POINT', 2, 'COMMA')}"></span></td>
             </tr>
             <tr th:if="${despesas.empty}">
                 <td colspan="2" style="text-align: center;">Nenhuma despesa lançada neste mês.</td>
@@ -86,7 +85,7 @@
     </table>
 
     <div class="saldo-final">
-        SALDO ATUAL EM CAIXA: <span th:text="${#numbers.formatCurrency(saldoAtual)}"></span>
+        SALDO ATUAL EM CAIXA: R$ <span th:text="${#numbers.formatDecimal(saldoAtual, 1, 'POINT', 2, 'COMMA')}"></span>
     </div>
 
 </body>
