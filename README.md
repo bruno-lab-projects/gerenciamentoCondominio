@@ -1,3 +1,4 @@
+teste runner
 # 🏢 Sistema de Gestão de Condomínio
 
 Sistema completo para **gerenciamento financeiro e administrativo de condomínios**, com foco em **transparência fiscal**, **automação de documentos** e **controle rigoroso de despesas**.
